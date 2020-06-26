@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "555493885408",
+    "firebase_url": "https://gpangi-test.firebaseio.com",
+    "project_id": "gpangi-test",
+    "storage_bucket": "gpangi-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555493885408:android:ca89ebe541921483651785",
+        "android_client_info": {
+          "package_name": "com.technonia.gpangi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555493885408-l93f3ecngvi8tvobur9rbu3ac9ci7goe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2v9xINkjh6N0tHmvouSLBT84ByJAjtBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555493885408-l93f3ecngvi8tvobur9rbu3ac9ci7goe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
