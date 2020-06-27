@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        String url = "http://cms.catchloc.com/";
+        String url = "https://cms.catchloc.com/";
 
         mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
         mWebView = (WebView)findViewById(R.id.catchloc_webview);
