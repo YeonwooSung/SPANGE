@@ -3,7 +3,9 @@ package com.technonia.gpangi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
@@ -30,6 +32,7 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
             for (String device_id : device_id_set) {
                 String result_of_registration = NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id, token);
 
+                Log.d("DEBUGGING_FIREBASE_PUSH_NOTIFICATION", result_of_registration);
                 if (result_of_registration.contains("Exception")) {
                     Log.e("Exception", result_of_registration);
                     //TODO check if some exception occurred while sending the data to the server
@@ -90,9 +93,24 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         String title = remoteMessage.getData().get("title");
         String message = remoteMessage.getData().get("body");
 
+        //TODO
+        String latitude = "37.401782989502";
+        String longitude = "126.7320098877";
+
         String channel = "gpangi_channel";      // channel id
         String channel_nm = "gpangi_channel_name";  // channel name
         String channel_description = "FCM channel for push notification";
+
+        //TODO
+        Context appContext = getApplicationContext();
+
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        intent.putExtra(appContext.getString(R.string.push_notification_key_push_notification), "yes");
+        intent.putExtra(appContext.getString(R.string.push_notification_key_latitude), latitude);
+        intent.putExtra(appContext.getString(R.string.push_notification_key_longitude), longitude);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        //TODO
 
         // 오레오 버전부터는 "Notification Channel"이 없으면 푸시가 생성되지 않는 현상이 있습니다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,6 +135,7 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
                             .setSmallIcon(R.drawable.ic_launcher_background)
                             .setContentTitle(title)
                             .setContentText(message)
+                            .setContentIntent(pendingIntent)
                             .setChannelId(channel)
                             .setAutoCancel(true)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -135,6 +154,7 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
                             .setSmallIcon(R.drawable.ic_launcher_background)
                             .setContentTitle(title)
                             .setContentText(message)
+                            .setContentIntent(pendingIntent)
                             .setChannelId(channel)
                             .setAutoCancel(true)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
