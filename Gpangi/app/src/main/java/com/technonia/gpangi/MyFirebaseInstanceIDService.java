@@ -32,7 +32,6 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
             for (String device_id : device_id_set) {
                 String result_of_registration = NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id, token);
 
-                Log.d("DEBUGGING_FIREBASE_PUSH_NOTIFICATION", result_of_registration);
                 if (result_of_registration.contains("Exception")) {
                     Log.e("Exception", result_of_registration);
                     //TODO check if some exception occurred while sending the data to the server
