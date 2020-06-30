@@ -57,11 +57,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             longitude = Double.parseDouble(longitude_str);
         } catch (NumberFormatException e) {
             //TODO
-            finish();
+            //finish();
+            latitude = 37.401782989502;
+            longitude = 126.7320098877;
         }
 
         // Add a marker in Sydney and move the camera
-        LatLng lat_lng = new LatLng(-34, 151);
+        LatLng lat_lng = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(lat_lng).title("Current Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(lat_lng));
     }
