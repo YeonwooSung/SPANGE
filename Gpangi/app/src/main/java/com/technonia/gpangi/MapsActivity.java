@@ -50,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String pushNotification = myIntent.getStringExtra(getString(R.string.push_notification_key_push_notification));
 
         //TODO
-        if (!pushNotification.equals("yes")) finish();
+        //if (!pushNotification.equals("yes")) finish();
 
         try {
             latitude = Double.parseDouble(latitude_str);
