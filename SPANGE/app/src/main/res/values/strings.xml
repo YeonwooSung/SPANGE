@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SPANGE</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="baseURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
+
+    <!--Strings for Setting screen-->
+    <string name="text_input_device_id">Device ID</string>
+    <string name="setting_activity_button_ok">OK</string>
+
+    <!--Strings for SharedPreferences   -->
+    <string name="shared_preferences_file_name">Gpangi@SharedPreferences</string>
+    <string name="fcm_token_key">Gpangi@fcm_token_key</string>
+    <string name="device_id_key">Gpangi@device_id_key</string>
+    <string name="not_found_invalid_key">SharedPreferences@key_not_found</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!--Extra Strings for Push Notification Intent-->
+    <string name="push_notification_key_push_notification">push_notification</string>
+    <string name="push_notification_key_latitude">latitude</string>
+    <string name="push_notification_key_longitude">longitude</string>
+
+</resources>

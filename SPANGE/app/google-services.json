@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "669150721014",
+    "firebase_url": "https://spange-bfd55.firebaseio.com",
+    "project_id": "spange-bfd55",
+    "storage_bucket": "spange-bfd55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:669150721014:android:d6579c1ab8973e32b2cdd7",
+        "android_client_info": {
+          "package_name": "com.technonia.spange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "669150721014-km1d583afl2q1ddl9p3785rgf0nelnsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFQIo5wukJLEOgdeqXdPAHXlS1anf4vDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "669150721014-km1d583afl2q1ddl9p3785rgf0nelnsk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
