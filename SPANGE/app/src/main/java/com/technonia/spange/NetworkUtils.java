@@ -19,7 +19,7 @@ import javax.net.ssl.SSLContext;
 public class NetworkUtils {
 
     protected static String sendRequestForNewDeviceID(String baseURL, String device_id, String token) {
-        String urlStr = baseURL + "/spangiNotification?token=" + token + "&deviceID=" + device_id;
+        String urlStr = baseURL + "/spangeNotification?token=" + token + "&deviceID=" + device_id;
 
         Log.d("URL", urlStr);
 

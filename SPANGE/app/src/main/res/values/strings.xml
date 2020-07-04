@@ -9,9 +9,9 @@
     <string name="setting_activity_button_ok">OK</string>
 
     <!--Strings for SharedPreferences   -->
-    <string name="shared_preferences_file_name">Gpangi@SharedPreferences</string>
-    <string name="fcm_token_key">Gpangi@fcm_token_key</string>
-    <string name="device_id_key">Gpangi@device_id_key</string>
+    <string name="shared_preferences_file_name">SPANGE@SharedPreferences</string>
+    <string name="fcm_token_key">SPANGE@fcm_token_key</string>
+    <string name="device_id_key">SPANGE@device_id_key</string>
     <string name="not_found_invalid_key">SharedPreferences@key_not_found</string>
     <string name="title_activity_maps">Map</string>
 
