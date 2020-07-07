@@ -18,11 +18,31 @@ import javax.net.ssl.SSLContext;
 
 public class NetworkUtils {
 
-    protected static String sendRequestForNewDeviceID(String baseURL, String device_id, String token) {
+    static String sendRequestForNewDeviceID(String baseURL, String device_id, String token) {
         String urlStr = baseURL + "/spangeNotification?token=" + token + "&deviceID=" + device_id;
-
         Log.d("URL", urlStr);
+        return sendRequest(urlStr, token, null, device_id);
+    }
 
+    static String sendRequestToUpdateToken(String baseURL, String previousToken, String newToken) {
+        String urlStr = baseURL + "/spangeNotification/updateToken?previousToken=" + previousToken + "&newToken=" + newToken;
+        Log.d("URL", urlStr);
+        return sendRequest(urlStr, newToken, null, null);
+    }
+
+    static String sendRequestToRegisterDevice(String baseURL, String user_id, String device_id) {
+        String urlStr = baseURL + "/spangeNotification/registerDevice?userID=" + user_id + "&deviceID=" + device_id;
+        Log.d("URL", urlStr);
+        return sendRequest(urlStr, null, user_id, device_id);
+    }
+
+    static String sendRequestForRegisterUser(String baseURL, String user_id, String token) {
+        String urlStr = baseURL + "/spangeNotification/registerUser?userID=" + user_id + "&token=" + token;
+        Log.d("URL", urlStr);
+        return sendRequest(urlStr, token, user_id, null);
+    }
+
+    private static String sendRequest(String urlStr, String token, String user_id, String device_id) {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -56,7 +76,11 @@ public class NetworkUtils {
             conn.setDoOutput(true);
 
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("fcm_token", token);
+
+            // check if null
+            if (token != null) jsonParam.put("fcm_token", token);
+            if (user_id != null) jsonParam.put("user_id", user_id);
+            if (device_id != null) jsonParam.put("device_id", device_id);
 
             Log.d("JSON", jsonParam.toString());
 

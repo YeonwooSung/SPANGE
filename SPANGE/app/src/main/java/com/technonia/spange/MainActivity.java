@@ -40,10 +40,30 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://cms.catchloc.com/";
 
         mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+
+        // setup WebView
         mWebView = (WebView)findViewById(R.id.catchloc_webview);
         mWebView.setWebViewClient(new WebViewClient());
         mWebSettings = mWebView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
+        mWebSettings.setDomStorageEnabled(true);
+
+        /*
+         * Add WebView client
+         *
+         * Reference:
+         *      <https://stackoverflow.com/questions/40620431/detect-if-a-specific-button-has-been-clicked-in-android-webview>
+         */
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                loadEvent();
+            }
+
+            private void loadEvent() {
+                //TODO
+            }
+        });
 
         // setup for CookieManager
         CookieManager cookieManager = CookieManager.getInstance();
@@ -105,9 +125,11 @@ public class MainActivity extends AppCompatActivity {
         btn_stop_location.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //TODO getCookie()
+                String user_id = "tjddusdn0518@naver.com";
 
                 // navigate to settings
                 Intent navigation_intent = new Intent(MainActivity.this, SettingsActivity.class);
+                navigation_intent.putExtra(getString(R.string.extra_str_key_user_id), user_id);
                 startActivity(navigation_intent);
             }
         });

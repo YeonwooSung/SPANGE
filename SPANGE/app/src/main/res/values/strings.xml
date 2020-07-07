@@ -11,6 +11,7 @@
     <!--Strings for SharedPreferences   -->
     <string name="shared_preferences_file_name">SPANGE@SharedPreferences</string>
     <string name="fcm_token_key">SPANGE@fcm_token_key</string>
+    <string name="user_id_key">SPANGE@user_id_key</string>
     <string name="device_id_key">SPANGE@device_id_key</string>
     <string name="not_found_invalid_key">SharedPreferences@key_not_found</string>
     <string name="title_activity_maps">Map</string>
@@ -19,5 +20,7 @@
     <string name="push_notification_key_push_notification">push_notification</string>
     <string name="push_notification_key_latitude">latitude</string>
     <string name="push_notification_key_longitude">longitude</string>
+
+    <string name="extra_str_key_user_id">user_id</string>
 
 </resources>

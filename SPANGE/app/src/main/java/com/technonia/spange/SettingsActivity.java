@@ -1,5 +1,6 @@
 package com.technonia.spange;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
+    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        // get intent, and check the passed values
+        Intent myIntent = getIntent(); // gets the previously created intent
+        user_id = myIntent.getStringExtra(getString(R.string.extra_str_key_user_id));
+
+        //TODO If user_id == null (or empty string, etc), get user_id from local storage
     }
 
     private void editLayoutParams() {
@@ -84,10 +92,13 @@ public class SettingsActivity extends AppCompatActivity {
                 String fcm_token_str = sp.getString(getString(R.string.fcm_token_key),not_found);
 
                 // If the FCM token is stored in the local storage send the POST request to the server for new device_id
-                if (!fcm_token_str.equals(not_found))
+                if (!fcm_token_str.equals(not_found)) {
                     NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id_str, fcm_token_str);
-                else
+
+                    NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
+                } else {
                     Log.d("NotFound", "Not Found!!!!");
+                }
 
                 // store the device_id_str
                 storeDeviceId(sp, device_id_str);

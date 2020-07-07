@@ -15,13 +15,20 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
 import java.util.Set;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
 
-    private void sendNewTokenWithRegisteredDeviceIDsToServer(Context appContext, SharedPreferences sp, String token) {
+    private void sendNewTokenWithRegisteredDeviceIDsToServer(Context appContext, SharedPreferences sp, String token, String tokenKey) {
         String baseURL = appContext.getString(R.string.baseURL);
+
+        String previousToken = sp.getString(tokenKey, null);
+        if (previousToken != null) {
+            String result_str = NetworkUtils.sendRequestToUpdateToken(baseURL, previousToken, token);
+            if (result_str.contains("Exception")) Log.e("Exception", result_str);
+        }
 
         // get device_id_set, which contains all registered Device IDs
         String stringSetKey = appContext.getString(R.string.device_id_key);
@@ -63,12 +70,12 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         // get the SharedPreferences instance
         String fileName = appContext.getString(R.string.shared_preferences_file_name);
         SharedPreferences sp = appContext.getSharedPreferences(fileName, MODE_PRIVATE);
+        String token_key = appContext.getString(R.string.fcm_token_key);
 
         // get a set of device IDs, and send the token to the server via POST request with all registered device IDs
-        sendNewTokenWithRegisteredDeviceIDsToServer(appContext, sp, token);
+        sendNewTokenWithRegisteredDeviceIDsToServer(appContext, sp, token, token_key);
 
         // store a token in the local storage
-        String token_key = appContext.getString(R.string.fcm_token_key);
         storeTokenPermanently(sp, token_key, token);
     }
 
@@ -89,27 +96,26 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
      * 이부분은 차후 테스트 날릴때 설명 드리겠습니다.
      * **/
     private void sendNotification(RemoteMessage remoteMessage) {
-        String title = remoteMessage.getData().get("title");
-        String message = remoteMessage.getData().get("body");
+        Map<String, String> data = remoteMessage.getData();
 
-        //TODO
-        String latitude = "37.401782989502";
-        String longitude = "126.7320098877";
+        String title = data.get("title");
+        String message = data.get("body");
 
-        String channel = "gpangi_channel";      // channel id
-        String channel_nm = "gpangi_channel_name";  // channel name
+        String latitude = data.get("latitude");
+        String longitude = data.get("longitude");
+
+        String channel = "spange_channel";      // channel id
+        String channel_nm = "spange_channel_name";  // channel name
         String channel_description = "FCM channel for push notification";
 
-        //TODO
-        Context appContext = getApplicationContext();
 
+        Context appContext = getApplicationContext();
         Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
         intent.putExtra(appContext.getString(R.string.push_notification_key_push_notification), "yes");
         intent.putExtra(appContext.getString(R.string.push_notification_key_latitude), latitude);
         intent.putExtra(appContext.getString(R.string.push_notification_key_longitude), longitude);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-        //TODO
 
         // 오레오 버전부터는 "Notification Channel"이 없으면 푸시가 생성되지 않는 현상이 있습니다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
