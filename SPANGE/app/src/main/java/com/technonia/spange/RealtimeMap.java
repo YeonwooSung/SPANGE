@@ -3,8 +3,10 @@ package com.technonia.spange;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,6 +20,13 @@ import org.json.JSONObject;
 public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Handler m_handler;
+    private Runnable runnable;
+
+    private double previousLatitude;
+    private double previousLongitude;
+
+    private final long interval_time = 60000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +36,24 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        m_handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getDataAndUpdateMap();
+                m_handler.postDelayed(this, interval_time);
+            }
+        };
+        m_handler.postDelayed(runnable, interval_time);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // remove callbacks
+        m_handler.removeCallbacks(runnable);
     }
 
     /**
@@ -41,6 +68,8 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        previousLatitude = 0;
+        previousLongitude = 0;
 
         String response = NetworkUtils.sendRequestToGetRecentLocation();
         JSONObject jsonObj = Utils.parseResponse(response);
@@ -66,13 +95,43 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
             longitude = Utils.DEFAULT_LONGITUDE;
         }
 
-        setLocationForMap(latitude, longitude, deviceName);
+        previousLatitude = latitude;
+        previousLongitude = longitude;
+        setLocationForMap(latitude, longitude, deviceName, false);
     }
 
-    private void setLocationForMap(double latitude, double longitude, String deviceName) {
+    private void getDataAndUpdateMap() {
+        String response = NetworkUtils.sendRequestToGetRecentLocation();
+        JSONObject jsonObj = Utils.parseResponse(response);
+
+        // Utils.parseResponse() method returns null if it founds some error in the response string.
+        // Thus, if jsonObj is not null, it would be possible to assume that there is no error in the response.
+        if (jsonObj != null) {
+            try {
+                double latitude = jsonObj.getDouble("latitude");
+                double longitude = jsonObj.getDouble("longitude");
+                String deviceName = jsonObj.getString("name");
+
+                if (latitude != previousLatitude && longitude != previousLongitude)
+                    setLocationForMap(latitude, longitude, deviceName, true);
+
+                previousLatitude = latitude;
+                previousLongitude = longitude;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setLocationForMap(double latitude, double longitude, String deviceName, boolean needToAnimate) {
         LatLng latLng = new LatLng(latitude, longitude);
         if (deviceName != null)
             mMap.addMarker(new MarkerOptions().position(latLng).title(deviceName));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
+        if (needToAnimate)
+            mMap.moveCamera(cameraUpdate);
+        else
+            mMap.animateCamera(cameraUpdate);
     }
 }
