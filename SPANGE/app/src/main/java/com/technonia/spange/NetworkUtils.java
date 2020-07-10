@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -121,12 +122,19 @@ public class NetworkUtils {
     }
 
 
-    String sendRequestToGetRecentLocation(String baseURL, String apiKey, String memberKey, long timestamp, String certKey) {
-        String urlStr = baseURL += "?api_key=" + apiKey + "&member_key=" + memberKey + "&timestamp=" + timestamp + "&cert_key=" + certKey;
+    static String sendRequestToGetRecentLocation() {
+        String urlStr = Utils.getUrlForRecentLocation();
+        Log.d("URL", urlStr);
         return sendGETRequest(urlStr);
     }
 
-    private String sendGETRequest(String urlStr) {
+    static String sendRequestToGetRoute(Date fromDate, Date toDate) {
+        String urlStr = Utils.getUrlForRouteData(fromDate, toDate);
+        Log.d("URL", urlStr);
+        return sendGETRequest(urlStr);
+    }
+
+    private static String sendGETRequest(String urlStr) {
         String result = null;
         int resCode;
         try {
