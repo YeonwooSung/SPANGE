@@ -93,11 +93,13 @@ public class SettingsActivity extends AppCompatActivity {
 
                 // If the FCM token is stored in the local storage send the POST request to the server for new device_id
                 if (!fcm_token_str.equals(not_found)) {
-                    NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id_str, fcm_token_str);
+                    String result_str = NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id_str, fcm_token_str);
+                    Log.d("NewDeviceRequest", result_str);
 
-                    NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
+                    result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
+                    Log.d("RegisterDevice", result_str);
                 } else {
-                    Log.d("NotFound", "Not Found!!!!");
+                    Log.e("NotFound", "Not Found!!!!");
                 }
 
                 // store the device_id_str
