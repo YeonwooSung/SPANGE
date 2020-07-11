@@ -2,7 +2,9 @@ package com.technonia.spange;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,14 +12,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private LatLng[] latLngs;
+    private long[] times;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +37,6 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -43,23 +51,81 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        redrawMap(false);
+    }
+
+    private void redrawMap(boolean removeAll) {
+        if (removeAll)
+            mMap.clear(); // Removes all markers, overlays, and polylines from the map.
+
         //TODO  <https://stackoverflow.com/a/25597046/9012940>
-        Date fromDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 2);
-        Date toDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 1);
+        Date fromDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 3);
+        Date toDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 2);
 
         String response = NetworkUtils.sendRequestToGetRoute(fromDate, toDate);
-        JSONObject jsonObj = Utils.parseResponse(response);
+        JSONArray jsonArray = Utils.parseResponseArray(response);
 
-        if (jsonObj != null) {
-            //TODO on success
+        if (jsonArray != null)
+            getDataFromJsonObject(jsonArray);
+        else
+            setMap_default();
+
+        if (latLngs != null) {
+            int finalIndex = latLngs.length - 1;
+            for (int i = 0; i < finalIndex; i++) {
+                long t = times[i];
+                Date date = new Date(t * 1000L);
+                SimpleDateFormat transFormat = new SimpleDateFormat("HH시 mm분 ss초");
+                String dateString = transFormat.format(date);
+
+                LatLng currentLatLng = latLngs[i];
+                mMap.addMarker(new MarkerOptions().position(currentLatLng).title(dateString));
+
+                // add polyline
+                PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions.add(currentLatLng, latLngs[i + 1]);
+                polylineOptions.width(5);
+                polylineOptions.color(Color.BLUE);
+
+                Polyline line = mMap.addPolyline(polylineOptions);
+                line.setClickable(false);  // make the polyline un-clickable
+            }
+
+            LatLng currentLocation = latLngs[finalIndex];
+            mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
         } else {
             setMap_default();
         }
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    private void getDataFromJsonObject(JSONArray jsonArray) {
+        int length = jsonArray.length();
+        if (length < 1) {
+            latLngs = null;
+            times = null;
+            return;
+        }
+
+        latLngs = new LatLng[length];
+        times = new long[length];
+        try {
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                long date = jsonObject.getLong("reg_date");
+                times[i] = date;
+
+                double latitude = jsonObject.getDouble("latitude");
+                double longitude = jsonObject.getDouble("longitude");
+                LatLng latLng = new LatLng(latitude, longitude);
+                latLngs[i] = latLng;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            latLngs = null;
+            times = null;
+        }
     }
 
     private void setMap_default() {

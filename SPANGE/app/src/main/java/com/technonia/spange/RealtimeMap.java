@@ -37,6 +37,7 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // Reference for Handler:  <https://developer.android.com/reference/android/os/Handler.html>
         m_handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -112,8 +113,10 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
                 double longitude = jsonObj.getDouble("longitude");
                 String deviceName = jsonObj.getString("name");
 
-                if (latitude != previousLatitude && longitude != previousLongitude)
+                if (latitude != previousLatitude && longitude != previousLongitude) {
+                    mMap.clear(); // Removes all markers, overlays, and polylines from the map.
                     setLocationForMap(latitude, longitude, deviceName, true);
+                }
 
                 previousLatitude = latitude;
                 previousLongitude = longitude;
