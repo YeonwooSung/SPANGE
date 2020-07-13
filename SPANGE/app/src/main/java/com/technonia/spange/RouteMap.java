@@ -1,15 +1,23 @@
 package com.technonia.spange;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -25,8 +33,11 @@ import java.util.Date;
 public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private UiSettings mUiSettings;
     private LatLng[] latLngs;
     private long[] times;
+
+    private final int DEFAULT_ZOOM_LEVEL = 17;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +61,20 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        initUISettings();
         redrawMap(false);
+    }
+
+    private void initUISettings() {
+        mUiSettings = mMap.getUiSettings();
+
+        // Keep the UI Settings state in sync with the checkboxes.
+        mUiSettings.setZoomControlsEnabled(true);
+        mUiSettings.setCompassEnabled(true);
+        mUiSettings.setScrollGesturesEnabled(true);
+        mUiSettings.setZoomGesturesEnabled(true);
+        mUiSettings.setTiltGesturesEnabled(true);
+        mUiSettings.setRotateGesturesEnabled(true);
     }
 
     private void redrawMap(boolean removeAll) {
@@ -93,7 +116,7 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
 
             LatLng currentLocation = latLngs[finalIndex];
             mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, DEFAULT_ZOOM_LEVEL));
         } else {
             setMap_default();
         }
@@ -130,6 +153,6 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
 
     private void setMap_default() {
         LatLng default_latlng = new LatLng(Utils.DEFAULT_LATITUDE, Utils.DEFAULT_LONGITUDE);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_latlng, 18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_latlng, DEFAULT_ZOOM_LEVEL));
     }
 }

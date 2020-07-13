@@ -2,9 +2,15 @@ package com.technonia.spange;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,15 +33,24 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     private double previousLongitude;
 
     private final long interval_time = 60000;
+    private static String userID = "app_test";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_realtime_map);
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        setUpButtons();
 
         // Reference for Handler:  <https://developer.android.com/reference/android/os/Handler.html>
         m_handler = new Handler();
@@ -136,5 +151,28 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
             mMap.moveCamera(cameraUpdate);
         else
             mMap.animateCamera(cameraUpdate);
+    }
+
+    private void setUpButtons() {
+        Button btn_start_location = (Button)findViewById(R.id.btn_route_realtime);
+        btn_start_location.setClickable(true);
+        btn_start_location.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                Intent navigation = new Intent(RealtimeMap.this, RouteMap.class);
+                startActivity(navigation);
+            }
+        });
+
+        Button btn_stop_location = (Button)findViewById(R.id.btn_setting_realtime);
+        btn_stop_location.setClickable(true);
+        btn_stop_location.setOnClickListener(new Button.OnClickListener() {
+            private String user_id = userID;
+            public void onClick(View v) {
+                // navigate to settings
+                Intent navigation_intent = new Intent(RealtimeMap.this, SettingsActivity.class);
+                navigation_intent.putExtra(getString(R.string.extra_str_key_user_id), user_id);
+                startActivity(navigation_intent);
+            }
+        });
     }
 }

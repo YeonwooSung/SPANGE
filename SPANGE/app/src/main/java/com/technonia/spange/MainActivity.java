@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //mWebView.reload();
 
-                //Intent navigation = new Intent(MainActivity.this, RealtimeMap.class);
-                Intent navigation = new Intent(MainActivity.this, RouteMap.class);
+                Intent navigation = new Intent(MainActivity.this, RealtimeMap.class);
+                //Intent navigation = new Intent(MainActivity.this, RouteMap.class);
                 startActivity(navigation);
             }
         });
