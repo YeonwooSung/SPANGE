@@ -11,9 +11,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Utils {
-    private static String mApiKey = "f433e680e7aa5ec71e89051f05340b9093d0c519"; //"[YOUR_API_KEY]";
-    private static String mServerKey = "a838316031065112e6492c760ee809304fa0fafb";   //"[YOUR SERVER KEY]";
-    private static String mMemberKey =  "d5ac33230f930d0ddae3e381f247eed498df3d6f";  //"";
+    private static String mApiKey = "[YOUR_API_KEY]";
+    private static String mServerKey = "[YOUR SERVER KEY]";
+    private static String mMemberKey = "";
 
     public static final double DEFAULT_LATITUDE = 37.401782989502;
     public static final double DEFAULT_LONGITUDE = 126.7320098877;
