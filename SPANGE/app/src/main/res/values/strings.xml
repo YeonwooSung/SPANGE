@@ -22,5 +22,14 @@
     <string name="push_notification_key_longitude">longitude</string>
 
     <string name="extra_str_key_user_id">user_id</string>
+    <string name="title_activity_realtime_map">RealTimeMap</string>
+    <string name="title_activity_route_map">RouteMap</string>
 
+    <!--Strings for Maps (push notification) screen-->
+    <string name="maps_activity_alert_msg_title">위치 데이터 수신 실패</string>
+    <string name="maps_activity_alert_msg_body">위치 데이터를 얻지 못하였습니다. 최근 위치를 확인하시겠습니까?</string>
+    <string name="maps_activity_alert_ok_button_str">최근 위치 확인</string>
+    <string name="maps_activity_alert_no_button_str">취소</string>
+    <string name="maps_activity_toast_msg_ok">Get Recent Location</string>
+    <string name="maps_activity_toast_msg_cancel">Cancel Click</string>
 </resources>

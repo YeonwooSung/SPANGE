@@ -12,6 +12,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -21,28 +23,28 @@ public class NetworkUtils {
     static String sendRequestForNewDeviceID(String baseURL, String device_id, String token) {
         String urlStr = baseURL + "/spangeNotification?token=" + token + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
-        return sendRequest(urlStr, token, null, device_id);
+        return sendPOSTRequest(urlStr, token, null, device_id);
     }
 
     static String sendRequestToUpdateToken(String baseURL, String previousToken, String newToken) {
         String urlStr = baseURL + "/spangeNotification/updateToken?previousToken=" + previousToken + "&newToken=" + newToken;
         Log.d("URL", urlStr);
-        return sendRequest(urlStr, newToken, null, null);
+        return sendPOSTRequest(urlStr, newToken, null, null);
     }
 
     static String sendRequestToRegisterDevice(String baseURL, String user_id, String device_id) {
         String urlStr = baseURL + "/spangeNotification/registerDevice?userID=" + user_id + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
-        return sendRequest(urlStr, null, user_id, device_id);
+        return sendPOSTRequest(urlStr, null, user_id, device_id);
     }
 
     static String sendRequestForRegisterUser(String baseURL, String user_id, String token) {
         String urlStr = baseURL + "/spangeNotification/registerUser?userID=" + user_id + "&token=" + token;
         Log.d("URL", urlStr);
-        return sendRequest(urlStr, token, user_id, null);
+        return sendPOSTRequest(urlStr, token, user_id, null);
     }
 
-    private static String sendRequest(String urlStr, String token, String user_id, String device_id) {
+    private static String sendPOSTRequest(String urlStr, String token, String user_id, String device_id) {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -117,5 +119,68 @@ public class NetworkUtils {
             //TODO
             return e.getMessage();
         }
+    }
+
+
+    static String sendRequestToGetRecentLocation() {
+        String urlStr = Utils.getUrlForRecentLocation();
+        Log.d("URL", urlStr);
+        return sendGETRequest(urlStr);
+    }
+
+    static String sendRequestToGetRoute(Date fromDate, Date toDate) {
+        String urlStr = Utils.getUrlForRouteData(fromDate, toDate);
+        Log.d("URL", urlStr);
+        return sendGETRequest(urlStr);
+    }
+
+    private static String sendGETRequest(String urlStr) {
+        String result = null;
+        int resCode;
+        try {
+            URL url = new URL(urlStr);
+            URLConnection urlConn = url.openConnection();
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // If secure connection
+            if (urlStr.startsWith("https")) {
+                try {
+                    SSLContext sc;
+                    sc = SSLContext.getInstance("TLS");
+                    sc.init(null, null, new java.security.SecureRandom());
+                    ((HttpsURLConnection)conn).setSSLSocketFactory(sc.getSocketFactory());
+                } catch (Exception e) {
+                    Log.d("SSL", "Failed to construct SSL object", e);
+                }
+            }
+
+            //HttpsURLConnection httpsConn = (HttpsURLConnection) urlConn;
+            conn.setAllowUserInteraction(false);
+            conn.setInstanceFollowRedirects(true);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            resCode = conn.getResponseCode();
+
+            if (resCode == HttpURLConnection.HTTP_OK) {
+                InputStreamReader tmp = new InputStreamReader(conn.getInputStream(), "UTF-8");
+                BufferedReader reader = new BufferedReader(tmp);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                result = sb.toString();
+            } else {
+                result = "Error - " + resCode;
+            }
+
+            conn.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
