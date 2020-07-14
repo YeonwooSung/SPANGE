@@ -1,5 +1,6 @@
 package com.technonia.spange;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,9 +11,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Utils {
-    private static String mApiKey = "[YOUR_API_KEY]";
-    private static String mServerKey = "[YOUR SERVER KEY]";
-    private static String mMemberKey =  "";
+    private static String mApiKey = "f433e680e7aa5ec71e89051f05340b9093d0c519"; //"[YOUR_API_KEY]";
+    private static String mServerKey = "a838316031065112e6492c760ee809304fa0fafb";   //"[YOUR SERVER KEY]";
+    private static String mMemberKey =  "d5ac33230f930d0ddae3e381f247eed498df3d6f";  //"";
 
     public static final double DEFAULT_LATITUDE = 37.401782989502;
     public static final double DEFAULT_LONGITUDE = 126.7320098877;
@@ -63,6 +64,23 @@ public class Utils {
     private static long getTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.getTime();
+    }
+
+    public static JSONArray parseResponseArray(String res) {
+        if (res == null || res.startsWith("Error") || res.contains("Exception"))
+            return null;
+
+        String s = res.trim();
+        if (s.startsWith("[") && s.endsWith("]")) {
+            try {
+                return new JSONArray(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return null;
     }
 
     public static JSONObject parseResponse(String res) {

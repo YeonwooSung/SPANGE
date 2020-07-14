@@ -80,6 +80,15 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // get text from the EditText instance
                 String device_id_str = getDeviceIdFromTextInput();
+                String user_id_str = getUserIdFromTextInput();
+
+                if (this.validateInputText(device_id_str)) {
+                    //TODO
+                }
+
+                if (this.validateInputText(user_id_str)) {
+                    //TODO
+                }
 
                 //TODO validate the device id
 
@@ -96,10 +105,14 @@ public class SettingsActivity extends AppCompatActivity {
                     String result_str = NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id_str, fcm_token_str);
                     Log.d("NewDeviceRequest", result_str);
 
+                    //TODO check response from the server (result_str), and do some suitable thing
+
                     result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
                     Log.d("RegisterDevice", result_str);
                 } else {
                     Log.e("NotFound", "Not Found!!!!");
+
+                    //TODO alert error
                 }
 
                 // store the device_id_str
@@ -107,6 +120,12 @@ public class SettingsActivity extends AppCompatActivity {
 
                 // finish this activity, and go back to the Main activity
                 finish();
+            }
+
+            private boolean validateInputText(String text) {
+                if (text == null || text.trim().equals(""))
+                    return true;
+                return false;
             }
         });
     }
@@ -126,7 +145,15 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private String getDeviceIdFromTextInput() {
-        EditText text_input = findViewById(R.id.device_id_edit_text);
+        return getInputFromEditText(R.id.device_id_edit_text);
+    }
+
+    private String getUserIdFromTextInput() {
+        return getInputFromEditText(R.id.user_id_edit_text);
+    }
+
+    private String getInputFromEditText(int view_id) {
+        EditText text_input = findViewById(view_id);
         return text_input.getText().toString();
     }
 

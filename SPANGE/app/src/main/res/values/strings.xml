@@ -6,6 +6,7 @@
 
     <!--Strings for Setting screen-->
     <string name="text_input_device_id">Device ID</string>
+    <string name="text_input_user_id">User ID</string>
     <string name="setting_activity_button_ok">OK</string>
 
     <!--Strings for SharedPreferences   -->

@@ -82,8 +82,7 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        previousLatitude = 0;
-        previousLongitude = 0;
+        this.setPreviousLatLng(Utils.DEFAULT_LATITUDE, Utils.DEFAULT_LONGITUDE);
 
         String response = NetworkUtils.sendRequestToGetRecentLocation();
         JSONObject jsonObj = Utils.parseResponse(response);
@@ -109,8 +108,7 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
             longitude = Utils.DEFAULT_LONGITUDE;
         }
 
-        previousLatitude = latitude;
-        previousLongitude = longitude;
+        this.setPreviousLatLng(latitude, longitude);
         setLocationForMap(latitude, longitude, deviceName, false);
     }
 
@@ -126,13 +124,13 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
                 double longitude = jsonObj.getDouble("longitude");
                 String deviceName = jsonObj.getString("name");
 
-                if (latitude != previousLatitude && longitude != previousLongitude) {
+                // check if at least one of latitude or longitude are changed.
+                if (latitude != previousLatitude || longitude != previousLongitude) {
                     mMap.clear(); // Removes all markers, overlays, and polylines from the map.
                     setLocationForMap(latitude, longitude, deviceName, true);
                 }
 
-                previousLatitude = latitude;
-                previousLongitude = longitude;
+                this.setPreviousLatLng(latitude, longitude);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -156,8 +154,7 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         btn_start_location.setClickable(true);
         btn_start_location.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Intent navigation = new Intent(RealtimeMap.this, RouteMap.class);
-                startActivity(navigation);
+                //TODO
             }
         });
 
@@ -172,5 +169,10 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
                 startActivity(navigation_intent);
             }
         });
+    }
+
+    private void setPreviousLatLng(double previousLatitude, double previousLongitude) {
+        this.previousLatitude = previousLatitude;
+        this.previousLongitude = previousLongitude;
     }
 }
