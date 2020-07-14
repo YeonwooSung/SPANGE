@@ -30,6 +30,6 @@
     <string name="maps_activity_alert_msg_body">위치 데이터를 얻지 못하였습니다. 최근 위치를 확인하시겠습니까?</string>
     <string name="maps_activity_alert_ok_button_str">최근 위치 확인</string>
     <string name="maps_activity_alert_no_button_str">취소</string>
-    <string name="maps_activity_toast_msg_ok">취소</string>
+    <string name="maps_activity_toast_msg_ok">Get Recent Location</string>
     <string name="maps_activity_toast_msg_cancel">Cancel Click</string>
 </resources>

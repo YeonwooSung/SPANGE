@@ -82,8 +82,8 @@ public class RouteMap extends FragmentActivity implements OnMapReadyCallback {
             mMap.clear(); // Removes all markers, overlays, and polylines from the map.
 
         //TODO  <https://stackoverflow.com/a/25597046/9012940>
-        Date fromDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 3);
-        Date toDate = new Date(System.currentTimeMillis()-24*60*60*1000 * 2);
+        Date fromDate = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000));
+        Date toDate = new Date();
 
         String response = NetworkUtils.sendRequestToGetRoute(fromDate, toDate);
         JSONArray jsonArray = Utils.parseResponseArray(response);
