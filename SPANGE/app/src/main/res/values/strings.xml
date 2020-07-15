@@ -8,6 +8,10 @@
     <string name="text_input_device_id">Device ID</string>
     <string name="text_input_user_id">User ID</string>
     <string name="setting_activity_button_ok">OK</string>
+    <string name="setting_toast_msg_empty_device_id">device id가 빈칸입니다</string>
+    <string name="setting_toast_msg_empty_user_id">사용자 id가 빈칸입니다</string>
+    <string name="setting_edit_text_error_msg_device_id_empty">device id를 입력해 주세요</string>
+    <string name="setting_edit_text_error_msg_user_id_empty">사용자 id를 입력해 주세요</string>
 
     <!--Strings for SharedPreferences   -->
     <string name="shared_preferences_file_name">SPANGE@SharedPreferences</string>
