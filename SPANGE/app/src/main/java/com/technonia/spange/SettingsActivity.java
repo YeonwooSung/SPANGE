@@ -42,7 +42,13 @@ public class SettingsActivity extends AppCompatActivity {
         Intent myIntent = getIntent(); // gets the previously created intent
         user_id = myIntent.getStringExtra(getString(R.string.extra_str_key_user_id));
 
-        //TODO If user_id == null (or empty string, etc), get user_id from local storage
+        // If the user_id is null, get the user_id from the local storage
+        if (user_id == null) {
+            Log.d("UserID_Null", "user_id == null");
+            String fileName = getString(R.string.shared_preferences_file_name);
+            SharedPreferences sp = getSharedPreferences(fileName, MODE_PRIVATE);
+            user_id = sp.getString(getString(R.string.user_id_key), "");
+        }
     }
 
     private TextWatcher inputTextWatcher = new TextWatcher() {
@@ -115,13 +121,13 @@ public class SettingsActivity extends AppCompatActivity {
                 String device_id_str = getDeviceIdFromTextInput();
                 String user_id_str = getUserIdFromTextInput();
 
-                if (this.validateInputText(device_id_str)) {
-                    setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_empty_device_id), getText(R.string.setting_edit_text_error_msg_device_id_empty));
+                if (this.checkIfInputTextIsInvalid(user_id_str)) {
+                    setErrorToEditText(editText_user_id, getText(R.string.setting_toast_msg_empty_user_id), getText(R.string.setting_edit_text_error_msg_user_id_empty));
                     return;
                 }
 
-                if (this.validateInputText(user_id_str)) {
-                    setErrorToEditText(editText_user_id, getText(R.string.setting_toast_msg_empty_user_id), getText(R.string.setting_edit_text_error_msg_user_id_empty));
+                if (this.checkIfInputTextIsInvalid(device_id_str)) {
+                    setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_empty_device_id), getText(R.string.setting_edit_text_error_msg_device_id_empty));
                     return;
                 }
 
@@ -134,10 +140,8 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
 
-            private boolean validateInputText(String text) {
-                if (text == null || text.trim().isEmpty())
-                    return true;
-                return false;
+            private boolean checkIfInputTextIsInvalid(String text) {
+                return text == null || text.trim().isEmpty();
             }
         });
     }
