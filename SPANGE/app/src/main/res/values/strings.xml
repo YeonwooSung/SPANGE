@@ -5,8 +5,8 @@
     <string name="baseURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
 
     <!--Strings for Setting screen-->
-    <string name="text_input_device_id">Device ID</string>
-    <string name="text_input_user_id">User ID</string>
+    <string name="text_input_device_id">기기 아이디</string>
+    <string name="text_input_user_id">사용자 아이디</string>
     <string name="setting_activity_button_ok">OK</string>
     <string name="setting_toast_msg_empty_device_id">device id가 빈칸입니다</string>
     <string name="setting_toast_msg_empty_user_id">사용자 id가 빈칸입니다</string>

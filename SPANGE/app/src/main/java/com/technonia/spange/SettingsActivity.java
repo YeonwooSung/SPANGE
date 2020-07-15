@@ -156,7 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             return false;
         } else if (result_str.equals(ERR_MSG_EXCEED_MAX_USER_NUM)) {
-            //TODO alert
+            //TODO alert??
 
             return false;
         }

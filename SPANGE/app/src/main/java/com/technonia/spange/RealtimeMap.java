@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -150,17 +152,24 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     }
 
     private void setUpButtons() {
-        Button btn_start_location = (Button)findViewById(R.id.btn_route_realtime);
-        btn_start_location.setClickable(true);
-        btn_start_location.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                //TODO
-            }
-        });
+        Button btn_settings = (Button)findViewById(R.id.btn_setting_realtime);
 
-        Button btn_stop_location = (Button)findViewById(R.id.btn_setting_realtime);
-        btn_stop_location.setClickable(true);
-        btn_stop_location.setOnClickListener(new Button.OnClickListener() {
+        // get layout params of the navigation button
+        LinearLayout.LayoutParams btn_lp = (LinearLayout.LayoutParams) btn_settings.getLayoutParams();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int display_height = displayMetrics.heightPixels;
+        int button_height = display_height / 10;
+
+        // update the button height
+        btn_lp.height = button_height;
+        btn_settings.setLayoutParams(btn_lp);
+
+        btn_settings.setClickable(true);
+
+        // add the event listener for the button
+        btn_settings.setOnClickListener(new Button.OnClickListener() {
             private String user_id = userID;
             public void onClick(View v) {
                 // navigate to settings
