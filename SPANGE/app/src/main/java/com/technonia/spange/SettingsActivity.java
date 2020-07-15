@@ -22,10 +22,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
-    private String user_id;
     private EditText editText_device_id;
     private EditText editText_user_id;
     private Button btn_set_device_id;
+
+    private final String ERR_MSG_INVALID_DEVICE_ID = "Invalid device id";
+    private final String ERR_MSG_EXCEED_MAX_USER_NUM = "Exceeded the max user number";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,18 +38,6 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        // get intent, and check the passed values
-        Intent myIntent = getIntent(); // gets the previously created intent
-        user_id = myIntent.getStringExtra(getString(R.string.extra_str_key_user_id));
-
-        // If the user_id is null, get the user_id from the local storage
-        if (user_id == null) {
-            Log.d("UserID_Null", "user_id == null");
-            String fileName = getString(R.string.shared_preferences_file_name);
-            SharedPreferences sp = getSharedPreferences(fileName, MODE_PRIVATE);
-            user_id = sp.getString(getString(R.string.user_id_key), "");
         }
     }
 
@@ -131,13 +121,8 @@ public class SettingsActivity extends AppCompatActivity {
                     return;
                 }
 
-                //TODO validate the device id
-
-                if (registerDeviceID(device_id_str)) {
-                    finish();  // finish this activity, and go back to the Main activity
-                } else {
-                    //TODO
-                }
+                // If the system registered the device id successfully, then finish this activity, and go back to the Main activity
+                if (registerDeviceID(device_id_str)) finish();
             }
 
             private boolean checkIfInputTextIsInvalid(String text) {
@@ -152,6 +137,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private boolean registerDeviceID(String device_id_str) {
+        String user_id = getUserIdFromTextInput();
+
         String fileName = getString(R.string.shared_preferences_file_name);
         SharedPreferences sp = getSharedPreferences(fileName, MODE_PRIVATE);
 
@@ -160,26 +147,39 @@ public class SettingsActivity extends AppCompatActivity {
         String not_found = getString(R.string.not_found_invalid_key);
         String fcm_token_str = sp.getString(getString(R.string.fcm_token_key),not_found);
 
-        // If the FCM token is stored in the local storage send the POST request to the server for new device_id
-        if (!fcm_token_str.equals(not_found)) {
-            String result_str = NetworkUtils.sendRequestForNewDeviceID(baseURL, device_id_str, fcm_token_str);
-            Log.d("NewDeviceRequest", result_str);
+        String result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
+        Log.d("RegisterDevice", result_str);
 
-            //TODO check response from the server (result_str), and do some suitable thing
+        // check if result_str is equal to the error message
+        if (result_str.equals(ERR_MSG_INVALID_DEVICE_ID)) {
+            setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_invalid_device_id), getText(R.string.setting_edit_text_error_msg_device_id_invalid));
 
-            result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
-            Log.d("RegisterDevice", result_str);
-        } else {
-            Log.e("NotFound", "Not Found!!!!");
-            //TODO alert error
+            return false;
+        } else if (result_str.equals(ERR_MSG_EXCEED_MAX_USER_NUM)) {
+            //TODO alert
 
             return false;
         }
+
+        // update GCM token if the user_id is valid
+        updateGCMTokenIfUserIDIsValid(baseURL, fcm_token_str, user_id);
 
         // store the device_id_str
         storeDeviceId_localStorage(sp, device_id_str);
 
         return true;
+    }
+
+    private void updateGCMTokenIfUserIDIsValid(String baseURL, String fcm_token_str, String user_id) {
+        String not_found = getString(R.string.not_found_invalid_key);
+
+        /*
+         * If the user_id is valid, send request to register (or update) the GCM token
+         */
+        if (user_id != null && !user_id.equals("")&& !fcm_token_str.equals(not_found)) {
+            String result_str = NetworkUtils.sendRequestForRegisterUser(baseURL, user_id, fcm_token_str);
+            Log.d("NewDeviceRequest", result_str);
+        }
     }
 
     private void storeDeviceId_localStorage(SharedPreferences sp, String new_device_id) {
@@ -193,7 +193,7 @@ public class SettingsActivity extends AppCompatActivity {
         // edit the content of the local storage
         Editor editor = sp.edit();
         editor.putStringSet(stringSetKey, device_id_set);
-        editor.commit();
+        editor.apply();
     }
 
     private String getDeviceIdFromTextInput() {
