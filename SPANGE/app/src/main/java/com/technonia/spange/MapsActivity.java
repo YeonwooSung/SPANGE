@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -88,9 +90,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.setTitle(getText(R.string.maps_activity_alert_msg_title)).setMessage(getText(R.string.maps_activity_alert_msg_body));
 
 
-        /**
-         * If the user press the ok button, the app will navigate to the RealtimeMap screen.
-         */
         builder.setPositiveButton(getText(R.string.maps_activity_alert_ok_button_str), new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -116,8 +115,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-        // generate alert instance, and make it visible
+        // generate alert instance
         AlertDialog alertDialog = builder.create();
+
+        //https://stackoverflow.com/questions/6562924/changing-font-size-into-an-alertdialog
+
+        // increase the font size of the alert title
+        final int alertTitle = getResources().getIdentifier("alertTitle", "id", "android");
+        TextView title = (TextView) alertDialog.findViewById(alertTitle);
+        increaseFontSize(title);
+
+        // increase the font size of alert message
+        TextView message = (TextView) alertDialog.findViewById(android.R.id.message);
+        increaseFontSize(message);
+
+        // increase the font size of buttons
+        changeButtonTextSize(alertDialog.getButton(1));
+        changeButtonTextSize(alertDialog.getButton(2));
+
+        // make dialog alert visible
         alertDialog.show();
+    }
+
+    private void changeButtonTextSize(Button button) {
+        float defaultTextSize = button.getTextSize();
+        float newTextSize = defaultTextSize * 1.5f;
+        button.setTextSize(newTextSize);
+    }
+
+    private void increaseFontSize(TextView textView) {
+        float defaultTextSize = textView.getTextSize();
+        float newTextSize = defaultTextSize * 1.5f;
+        textView.setTextSize(newTextSize);
     }
 }
