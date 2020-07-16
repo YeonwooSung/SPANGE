@@ -13,10 +13,14 @@ import java.util.Date;
 public class Utils {
     private static String mApiKey = "[YOUR_API_KEY]";
     private static String mServerKey = "[YOUR SERVER KEY]";
-    private static String mMemberKey = "";
+    private static String mMemberKey =  "";
 
-    public static final double DEFAULT_LATITUDE = 37.401782989502;
-    public static final double DEFAULT_LONGITUDE = 126.7320098877;
+    public static final double DEFAULT_LATITUDE = 35.182160;
+    public static final double DEFAULT_LONGITUDE = 126.898841;
+
+    static void setmMemberKey(String mMemberKey) {
+        Utils.mMemberKey = mMemberKey;
+    }
 
     static String getUrlForRecentLocation() {
         String base_url = "http://cms.catchloc.com/api.get.member.location.last.php";
