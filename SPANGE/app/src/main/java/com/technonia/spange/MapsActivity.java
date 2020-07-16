@@ -3,6 +3,7 @@ package com.technonia.spange;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private final double DEFAULT_LATITUDE = 0.0;
     private final double DEFAULT_LONGITUDE = 0.0;
+
+    private final float ALERT_TITLE_FONT_SIZE = 23f;
+    private final float ALERT_MSG_FONT_SIZE = 20f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         LatLng lat_lng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(lat_lng).title("Current Location"));
+        mMap.addMarker(new MarkerOptions().position(lat_lng).title("스팡이 사무실"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat_lng, 18));
     }
 
@@ -118,34 +122,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // generate alert instance
         AlertDialog alertDialog = builder.create();
 
-        //https://stackoverflow.com/questions/6562924/changing-font-size-into-an-alertdialog
+        // make dialog alert visible
+        alertDialog.show();
 
         // increase the font size of the alert title
         final int alertTitle = getResources().getIdentifier("alertTitle", "id", "android");
         TextView title = (TextView) alertDialog.findViewById(alertTitle);
-        increaseFontSize(title);
+        // to avoid the NullPointerException
+        if (title != null)
+            title.setTextSize(ALERT_TITLE_FONT_SIZE);
 
         // increase the font size of alert message
         TextView message = (TextView) alertDialog.findViewById(android.R.id.message);
-        increaseFontSize(message);
+
+        // to avoid the NullPointerException
+        if (message != null)
+            message.setTextSize(ALERT_MSG_FONT_SIZE);
 
         // increase the font size of buttons
-        changeButtonTextSize(alertDialog.getButton(1));
-        changeButtonTextSize(alertDialog.getButton(2));
+        Button possitive_button = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+        Button negative_button = alertDialog.getButton(Dialog.BUTTON_NEGATIVE);
 
-        // make dialog alert visible
-        alertDialog.show();
-    }
-
-    private void changeButtonTextSize(Button button) {
-        float defaultTextSize = button.getTextSize();
-        float newTextSize = defaultTextSize * 1.5f;
-        button.setTextSize(newTextSize);
-    }
-
-    private void increaseFontSize(TextView textView) {
-        float defaultTextSize = textView.getTextSize();
-        float newTextSize = defaultTextSize * 1.5f;
-        textView.setTextSize(newTextSize);
+        if (possitive_button != null) possitive_button.setTextSize(ALERT_MSG_FONT_SIZE);
+        if (negative_button != null) negative_button.setTextSize(ALERT_MSG_FONT_SIZE);
     }
 }
