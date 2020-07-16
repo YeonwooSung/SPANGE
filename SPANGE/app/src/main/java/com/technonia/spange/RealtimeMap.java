@@ -67,9 +67,22 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         // remove callbacks
         m_handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // remove callbacks
+        m_handler.removeCallbacks(runnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // remove callbacks
+        m_handler.postDelayed(runnable, 5000);
     }
 
     /**

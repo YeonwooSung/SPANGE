@@ -115,6 +115,9 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         intent.putExtra(appContext.getString(R.string.push_notification_key_latitude), latitude);
         intent.putExtra(appContext.getString(R.string.push_notification_key_longitude), longitude);
 
+        //TODO
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         // 오레오 버전부터는 "Notification Channel"이 없으면 푸시가 생성되지 않는 현상이 있습니다.
