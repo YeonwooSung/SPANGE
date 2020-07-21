@@ -3,18 +3,23 @@
 ## Work with Spacosa
 
 1. (주)스파코사의 GPer Device (SKT Lora향 모델 혹은 3G향 모델 사용) 와 Catchloc 위치추적 서버 시스템과 연동하여 자신만의 App을 만든다.
+
    참고 :
+   
    http://www.spacosa.com/ko/
+   
    http://www.gper.me/ko/gper_global.php
+   
    http://www.catchloc.com/ko/
-   물론 GPer 및 Catchloc 사용자를 위해서는 Spacosa사에서 "지퍼 GPS" 앱이 제공되고 있습니다.
-   본 프로젝트는 GPer와 Catchloc을 기반으로 자신만의 위치기반 서비스를 구축하고자 하시는 분들이 사용할 앱의 샘플입니다.
-   본 "Umile LTA" 앱은 CatchLoc 개발자 가이드에 기반하여 만들어 졌습니다. 
+   
+   물론 GPer 및 Catchloc 사용자를 위해서는 Spacosa사에서 "지퍼 GPS" 앱이 제공되고 있다.
+   본 프로젝트는 GPer와 Catchloc을 기반으로 자신만의 위치기반 서비스를 구축하고자 하시는 분들이 사용할 앱의 샘플이다.
+   본 "Umile LTA" 앱은 CatchLoc 개발자 가이드에 기반하여 만들어 졌다. 
    http://developer.catchloc.com/
    개발과정에 도움을 주신 스파코사 관계자분들께 감사를 드립니다.
    
-2. Umile LTA는 React Native를 사용해 개발되었습니다.
-   관련된 기술 내용은 React Native 공식 페이지를 참고하세요.
+2. Umile LTA는 React Native를 사용해 개발되다.
+   관련된 기술 내용은 React Native 공식 페이지를 참고.
   https://reactnative.dev/
   
 
