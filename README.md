@@ -26,6 +26,20 @@
   
 ## Functions and Screen Shots
 
+### 최근 위치 확인
+
+스파코사 API를 사용하면 최근 위치에 대한 데이터를 받을 수 있다. 아래 이미지는 구글 맵에 최근 위치를 표시하는 예제이다.
+
+![recent location](./imgs/recent_location_view.png)
+
+### 경로 확인
+
+스파코사 API를 사용하면 주어진 기간 동안 사용자가 지나간 경로에 대한 데이터를 받을 수 있다. 아래 이미지는 구글 맵에 경로를 표시하는 예제이다.
+
+![route view](./imgs/route_view1.png)
+
+![route view marker clicked](./imgs/route_view2.png)
+
 ## Issues
 
 ### Google Map
