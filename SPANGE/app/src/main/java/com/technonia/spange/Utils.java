@@ -1,5 +1,6 @@
 package com.technonia.spange;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +64,23 @@ public class Utils {
     private static long getTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp.getTime();
+    }
+
+    public static JSONArray parseResponseArray(String res) {
+        if (res == null || res.startsWith("Error") || res.contains("Exception"))
+            return null;
+
+        String s = res.trim();
+        if (s.startsWith("[") && s.endsWith("]")) {
+            try {
+                return new JSONArray(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return null;
     }
 
     public static JSONObject parseResponse(String res) {
