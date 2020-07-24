@@ -1,33 +1,71 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_signup"
     android:gravity="center"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/manager_button_id"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_manager"
+        app:layout_constraintBottom_toTopOf="@id/user_id_edit_text"
+        app:layout_constraintEnd_toStartOf="@id/exit_button_id" />
+
+    <Button
+        android:id="@+id/exit_button_id"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_exit"
+        app:layout_constraintBottom_toTopOf="@id/user_id_edit_text"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <EditText
         android:id="@+id/user_id_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="416dp"
+        android:background="@drawable/blank_user_off"
         android:ems="30"
         android:gravity="center"
         android:hint="@string/text_input_user_id"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/device_id_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/blank_device_off"
         android:ems="30"
         android:gravity="center"
         android:hint="@string/text_input_device_id"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_id_edit_text" />
 
     <Button
         android:id="@+id/device_id_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/setting_activity_button_ok" />
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_signup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/device_id_edit_text" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

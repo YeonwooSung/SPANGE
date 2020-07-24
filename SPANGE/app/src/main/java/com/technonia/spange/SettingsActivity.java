@@ -1,13 +1,17 @@
 package com.technonia.spange;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,11 +24,15 @@ import java.util.Set;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText editText_device_id;
     private EditText editText_user_id;
     private Button btn_set_device_id;
+    private Button btn_exit;
+    private Button btn_manager;
 
     private final String ERR_MSG_INVALID_DEVICE_ID = "Invalid device id";
     private final String ERR_MSG_EXCEED_MAX_USER_NUM = "Exceeded the max user number";
@@ -33,12 +41,52 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        editLayoutParams();  // Edit the Layout parameters
+        initComponents();  // initialise edit texts and buttons
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void changeBackgroundOfEditText_deviceID(int type) {
+        Drawable bg = null;
+
+        switch (type) {
+            case 1:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_on);
+                break;
+            case 2:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_off);
+                break;
+            case 3:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_caution);
+                break;
+            default:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_off);
+        }
+
+        editText_device_id.setBackground(bg);
+    }
+
+    private void changeBackgroundOfEditText_userID(int type) {
+        Drawable bg = null;
+
+        switch (type) {
+            case 1:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_on);
+                break;
+            case 2:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_off);
+                break;
+            case 3:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_caution);
+                break;
+            default:
+                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_off);
+        }
+
+        editText_user_id.setBackground(bg);
     }
 
     private TextWatcher inputTextWatcher = new TextWatcher() {
@@ -64,45 +112,69 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
-    private void editLayoutParams() {
+    private void initComponents() {
+        // find EditTexts
         editText_device_id = findViewById(R.id.device_id_edit_text);
         editText_user_id = findViewById(R.id.user_id_edit_text);
+
+        // find Buttons
         btn_set_device_id = findViewById(R.id.device_id_button);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int display_height = displayMetrics.heightPixels;
-        int display_width = displayMetrics.widthPixels;
-
-        int component_height = display_height / 12;
-        int component_width = display_width / 4 * 3;
-
-        // get LayoutParams of components
-        LayoutParams text_input_lp = (LinearLayout.LayoutParams) editText_device_id.getLayoutParams();
-        LayoutParams device_id_btn_lp = (LinearLayout.LayoutParams) btn_set_device_id.getLayoutParams();
-
-        // change the value of the width of the components
-        text_input_lp.width = component_width;
-        device_id_btn_lp.width = component_width;
-
-        // change the value of the height of the components
-        text_input_lp.height = component_height;
-        device_id_btn_lp.height = component_height;
-
-        // Apply the updated layout parameters to components
-        editText_device_id.setLayoutParams(text_input_lp);
-        editText_user_id.setLayoutParams(text_input_lp);
-        btn_set_device_id.setLayoutParams(device_id_btn_lp);
+        btn_exit = findViewById(R.id.exit_button_id);
+        btn_manager = findViewById(R.id.manager_button_id);
 
         // Add TextWatcher as an event listener to each EditText instance
         editText_user_id.addTextChangedListener(inputTextWatcher);
         editText_device_id.addTextChangedListener(inputTextWatcher);
+
+        // Add OnTouchListener to detect onTouch event, so that the app could change the background image of the corresponding EditText instance
+        editText_device_id.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                changeBackgroundOfEditText_deviceID(1);
+                return false;
+            }
+        });
+        editText_user_id.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                changeBackgroundOfEditText_userID(1);
+                return false;
+            }
+        });
+
+        // Add event listener to handle onFocusChange event
+        editText_device_id.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // when EditText gets focus
+                    changeBackgroundOfEditText_deviceID(1);
+                } else {
+                    // when EditText loses focus
+                    changeBackgroundOfEditText_deviceID(2);
+                }
+            }
+        });
+        editText_user_id.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    // when EditText gets focus
+                    changeBackgroundOfEditText_userID(1);
+                } else {
+                    // when EditText loses focus
+                    changeBackgroundOfEditText_userID(2);
+                }
+            }
+        });
 
         addButtonEventListener(); // add event listener to the button
     }
 
     private void addButtonEventListener() {
         btn_set_device_id.setClickable(true);
+        btn_exit.setClickable(true);
+        btn_manager.setClickable(true);
 
         // set the OnClickListener to the button
         btn_set_device_id.setOnClickListener(new Button.OnClickListener() {
@@ -127,6 +199,18 @@ public class SettingsActivity extends AppCompatActivity {
 
             private boolean checkIfInputTextIsInvalid(String text) {
                 return text == null || text.trim().isEmpty();
+            }
+        });
+
+        btn_exit.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btn_manager.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //
             }
         });
     }
