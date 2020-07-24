@@ -11,9 +11,11 @@
     <string name="setting_toast_msg_empty_device_id">device id가 빈칸입니다</string>
     <string name="setting_toast_msg_empty_user_id">사용자 id가 빈칸입니다</string>
     <string name="setting_toast_msg_invalid_device_id">올바르지 않은 기기 번호 입니다</string>
-    <string name="setting_edit_text_error_msg_device_id_empty">device id를 입력해 주세요</string>
-    <string name="setting_edit_text_error_msg_user_id_empty">사용자 id를 입력해 주세요</string>
+    <string name="setting_toast_msg_max_user_num">최대 사용자 수 초과</string>
+    <string name="setting_edit_text_error_msg_device_id_empty">기기 ID를 입력해 주세요</string>
+    <string name="setting_edit_text_error_msg_user_id_empty">사용자 ID를 입력해 주세요</string>
     <string name="setting_edit_text_error_msg_device_id_invalid">등록되지 않은 기기입니다. 다시 확인해 주시기 바랍니다.</string>
+    <string name="setting_edit_text_error_msg_exceed_max_user">해당 기기에 등록 가능한 최대 사용자 수를 초과하여 등록이 실패했습니다.</string>
 
     <!--Strings for SharedPreferences   -->
     <string name="shared_preferences_file_name">SPANGE@SharedPreferences</string>
@@ -39,4 +41,7 @@
     <string name="maps_activity_alert_no_button_str">취소</string>
     <string name="maps_activity_toast_msg_ok">마지막 위치 정보 불러오기</string>
     <string name="maps_activity_toast_msg_cancel">취소</string>
+    
+    <!-- Strings for the custom alert dialogs -->
+    <string name="alert_dialog_register_device"> 대표 사용자님이 등록을 수락하면 스팡이를 시작하실 수 있습니다.</string>
 </resources>

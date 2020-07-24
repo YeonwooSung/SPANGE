@@ -1,22 +1,26 @@
 package com.technonia.spange;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
@@ -41,12 +45,21 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        initComponents();  // initialise edit texts and buttons
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        // initialise edit texts and buttons
+        initEditTexts();
+        initButtons();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+
+    private boolean terminate() {
+        finish();
+        return true;
     }
 
     private void changeBackgroundOfEditText_deviceID(int type) {
@@ -89,42 +102,10 @@ public class SettingsActivity extends AppCompatActivity {
         editText_user_id.setBackground(bg);
     }
 
-    private TextWatcher inputTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            validateTextInput();
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            validateTextInput();
-        }
-
-        private void validateTextInput() {
-            String device_id = editText_device_id.getText().toString().trim();
-            String user_id = editText_user_id.getText().toString().trim();
-
-            boolean enableButton = !device_id.isEmpty() && !user_id.isEmpty();
-            btn_set_device_id.setEnabled(enableButton);
-        }
-    };
-
-    private void initComponents() {
+    private void initEditTexts() {
         // find EditTexts
         editText_device_id = findViewById(R.id.device_id_edit_text);
         editText_user_id = findViewById(R.id.user_id_edit_text);
-
-        // find Buttons
-        btn_set_device_id = findViewById(R.id.device_id_button);
-        btn_exit = findViewById(R.id.exit_button_id);
-        btn_manager = findViewById(R.id.manager_button_id);
-
-        // Add TextWatcher as an event listener to each EditText instance
-        editText_user_id.addTextChangedListener(inputTextWatcher);
-        editText_device_id.addTextChangedListener(inputTextWatcher);
 
         // Add OnTouchListener to detect onTouch event, so that the app could change the background image of the corresponding EditText instance
         editText_device_id.setOnTouchListener(new View.OnTouchListener() {
@@ -167,11 +148,15 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        addButtonEventListener(); // add event listener to the button
     }
 
-    private void addButtonEventListener() {
+    private void initButtons() {
+        // find Buttons
+        btn_set_device_id = findViewById(R.id.device_id_button);
+        btn_exit = findViewById(R.id.exit_button_id);
+        btn_manager = findViewById(R.id.manager_button_id);
+
+        // set buttons clickable
         btn_set_device_id.setClickable(true);
         btn_exit.setClickable(true);
         btn_manager.setClickable(true);
@@ -183,18 +168,23 @@ public class SettingsActivity extends AppCompatActivity {
                 String device_id_str = getDeviceIdFromTextInput();
                 String user_id_str = getUserIdFromTextInput();
 
+                // check if user id is valid
                 if (this.checkIfInputTextIsInvalid(user_id_str)) {
+                    changeBackgroundOfEditText_userID(3);
                     setErrorToEditText(editText_user_id, getText(R.string.setting_toast_msg_empty_user_id), getText(R.string.setting_edit_text_error_msg_user_id_empty));
                     return;
                 }
 
+                // check if device id is valid
                 if (this.checkIfInputTextIsInvalid(device_id_str)) {
+                    changeBackgroundOfEditText_deviceID(3);
                     setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_empty_device_id), getText(R.string.setting_edit_text_error_msg_device_id_empty));
                     return;
                 }
 
                 // If the system registered the device id successfully, then finish this activity, and go back to the Main activity
-                if (registerDeviceID(device_id_str)) finish();
+                //if (registerDeviceID(device_id_str)) terminate();
+                showAlertDialog("Test Admin");
             }
 
             private boolean checkIfInputTextIsInvalid(String text) {
@@ -204,15 +194,58 @@ public class SettingsActivity extends AppCompatActivity {
 
         btn_exit.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                finish();
+                terminate();
             }
         });
 
         btn_manager.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                //
+                //TODO
             }
         });
+    }
+
+    private void showAlertDialog(String adminName) {
+//        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+//        View dialogLayout = inflater.inflate(R.layout.dialog_for_register_success, null);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setView(dialogLayout);
+//
+//        builder.show();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int display_height = displayMetrics.heightPixels;
+        int display_width = displayMetrics.widthPixels;
+        int dialog_height = (int) (display_height * 0.45);
+        int dialog_width = (int) (display_width * 0.9);
+
+        Dialog d = new Dialog(SettingsActivity.this);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.dialog_for_register_success);
+
+        //final TextView tv = (TextView) d.findViewById(R.id.textView1);
+
+        final Button button = (Button) d.findViewById(R.id.dialog_button_ok_setting_activity);
+        button.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                terminate();
+            }
+        });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//
+//        // update the button height
+//        btn_lp.height = button_height;
+//        btn_settings.setLayoutParams(btn_lp);
+
+        lp.copyFrom(d.getWindow().getAttributes());
+        lp.width = dialog_height;
+        lp.height = dialog_width;
+        d.show();
+        d.getWindow().setAttributes(lp);
     }
 
     private void setErrorToEditText(EditText editText, CharSequence toastMsg, CharSequence errorMsg) {
@@ -236,11 +269,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         // check if result_str is equal to the error message
         if (result_str.equals(ERR_MSG_INVALID_DEVICE_ID)) {
+            changeBackgroundOfEditText_deviceID(3);
             setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_invalid_device_id), getText(R.string.setting_edit_text_error_msg_device_id_invalid));
 
             return false;
+
+        // check if max user number is exceeded
         } else if (result_str.equals(ERR_MSG_EXCEED_MAX_USER_NUM)) {
-            //TODO alert??
+            changeBackgroundOfEditText_deviceID(3);
+            setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_max_user_num), getText(R.string.setting_edit_text_error_msg_exceed_max_user));
 
             return false;
         }
@@ -290,11 +327,5 @@ public class SettingsActivity extends AppCompatActivity {
 
     private String getInputFromEditText(EditText text_input) {
         return text_input.getText().toString().trim();
-    }
-
-    @Override
-    public boolean onSupportNavigateUp(){
-        finish();
-        return true;
     }
 }
