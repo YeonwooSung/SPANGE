@@ -206,24 +206,31 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void showAlertDialog(String adminName) {
-//        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
-//        View dialogLayout = inflater.inflate(R.layout.dialog_for_register_success, null);
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setView(dialogLayout);
-//
-//        builder.show();
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        View dialogLayout = inflater.inflate(R.layout.dialog_for_register_success, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogLayout);
+
+        //builder.show();
+
+        AlertDialog d = builder.create();
+
+        //d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.show();
+
+        d.setContentView(R.layout.dialog_for_register_success);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int display_height = displayMetrics.heightPixels;
         int display_width = displayMetrics.widthPixels;
-        int dialog_height = (int) (display_height * 0.45);
+        int dialog_height = (int) (display_height * 0.4);
         int dialog_width = (int) (display_width * 0.9);
 
-        Dialog d = new Dialog(SettingsActivity.this);
-        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        d.setContentView(R.layout.dialog_for_register_success);
+//        Dialog d = new Dialog(SettingsActivity.this);
+//        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        d.setContentView(R.layout.dialog_for_register_success);
 
         //final TextView tv = (TextView) d.findViewById(R.id.textView1);
 
@@ -236,15 +243,11 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//
-//        // update the button height
-//        btn_lp.height = button_height;
-//        btn_settings.setLayoutParams(btn_lp);
 
         lp.copyFrom(d.getWindow().getAttributes());
-        lp.width = dialog_height;
-        lp.height = dialog_width;
-        d.show();
+        lp.width = dialog_width;
+        lp.height = dialog_height;
+        //d.show();
         d.getWindow().setAttributes(lp);
     }
 

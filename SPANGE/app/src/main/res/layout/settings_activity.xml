@@ -31,43 +31,43 @@
         android:id="@+id/user_id_edit_text"
         android:layout_width="280dp"
         android:layout_height="80dp"
-        android:layout_marginTop="416dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/blank_user_off"
         android:ems="30"
         android:gravity="center"
         android:hint="@string/text_input_user_id"
         android:inputType="textPersonName"
         android:textColor="@color/cast_expanded_controller_background_color"
+        app:layout_constraintBottom_toTopOf="@+id/device_id_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/device_id_edit_text"
         android:layout_width="280dp"
         android:layout_height="80dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/blank_device_off"
         android:ems="30"
         android:gravity="center"
         android:hint="@string/text_input_device_id"
         android:inputType="textPersonName"
         android:textColor="@color/cast_expanded_controller_background_color"
+        app:layout_constraintBottom_toTopOf="@+id/device_id_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_id_edit_text" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/device_id_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/button_signup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/device_id_edit_text" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
