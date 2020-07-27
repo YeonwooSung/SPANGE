@@ -41,7 +41,7 @@
     <string name="maps_activity_alert_no_button_str">취소</string>
     <string name="maps_activity_toast_msg_ok">마지막 위치 정보 불러오기</string>
     <string name="maps_activity_toast_msg_cancel">취소</string>
-    
+
     <!-- Strings for the custom alert dialogs -->
     <string name="alert_dialog_register_device"> 대표 사용자님이 등록을 수락하면 스팡이를 시작하실 수 있습니다.</string>
 </resources>
