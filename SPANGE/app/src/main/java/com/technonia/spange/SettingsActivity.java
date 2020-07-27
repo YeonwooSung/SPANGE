@@ -200,9 +200,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         btn_manager.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                //TODO
+                navigateToManagerScreen();
             }
         });
+    }
+
+    private void navigateToManagerScreen() {
+        Intent intent = new Intent(this, ManagerActivity.class);
+        startActivity(intent);
     }
 
     private void showAlertDialog(String adminName) {
