@@ -120,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), getText(R.string.maps_activity_toast_msg_cancel), Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
             }
         });
 
@@ -132,6 +133,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // Generate intent for navigation, and navigate to the RealtimeMap Activity
                 Intent navigateToMain = new Intent(MapsActivity.this, RealtimeMap.class);
                 startActivity(navigateToMain);
+
+                alertDialog.dismiss();
 
                 finish();  // finish this activity
             }

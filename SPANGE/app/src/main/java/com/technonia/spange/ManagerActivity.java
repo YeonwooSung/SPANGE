@@ -1,18 +1,22 @@
 package com.technonia.spange;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -72,9 +76,7 @@ public class ManagerActivity extends AppCompatActivity {
         }
 
         // add users in the tempList to the userList
-        for (UserAcceptance user : tempList) {
-            userList.add(user);
-        }
+        userList.addAll(tempList);
     }
 
     private void updateUserCards() {
@@ -87,11 +89,12 @@ public class ManagerActivity extends AppCompatActivity {
                 continue;
             }
 
+            String userName = user.getUserName();
+            updateUserName(i, userName);
+
             if (!user.isAccepted()) {
                 updateBackgroundImageOfLinearLayout_notAccepted(i);
             }
-
-            updateUserName(i, user.getUserName());
         }
     }
 
@@ -169,7 +172,6 @@ public class ManagerActivity extends AppCompatActivity {
         }
 
         Drawable bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_fill_unaccepted);
-        Drawable button_bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.button_accept);
 
         layout.setBackground(bg);
         button.setImageResource(R.drawable.button_accept);
@@ -177,22 +179,28 @@ public class ManagerActivity extends AppCompatActivity {
 
     private void updateUserName(int num, String userName) {
         TextView textView;
+        ImageButton button;
 
         switch (num) {
             case 0:
                 textView = findViewById(R.id.manager_activity_grid_layout_row0_text);
+                button = findViewById(R.id.manager_activity_img_button_row0);
                 break;
             case 1:
                 textView = findViewById(R.id.manager_activity_grid_layout_row1_text);
+                button = findViewById(R.id.manager_activity_img_button_row1);
                 break;
             case 2:
                 textView = findViewById(R.id.manager_activity_grid_layout_row2_text);
+                button = findViewById(R.id.manager_activity_img_button_row2);
                 break;
             case 3:
                 textView = findViewById(R.id.manager_activity_grid_layout_row3_text);
+                button = findViewById(R.id.manager_activity_img_button_row3);
                 break;
             case 4:
                 textView = findViewById(R.id.manager_activity_grid_layout_row4_text);
+                button = findViewById(R.id.manager_activity_img_button_row4);
                 break;
             default:
                 Log.e("InvalidArgument", "Invalid argument: " + num);
@@ -200,5 +208,65 @@ public class ManagerActivity extends AppCompatActivity {
         }
 
         textView.setText(userName);
+        addEventListener(userName, button);
+    }
+
+    private void addEventListener(final String userName, ImageButton button) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlertDialogForDeleteUser(userName);
+            }
+        });
+    }
+
+    private void showAlertDialogForDeleteUser(String userName) {
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
+        View dialogLayout = inflater.inflate(R.layout.dialog_for_delete_user, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogLayout);
+
+        // create alert dialog
+        final AlertDialog d = builder.create();
+
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        Window window = d.getWindow();
+        assert window != null;
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        window.setGravity(Gravity.CENTER);
+
+        d.show();
+        d.setContentView(R.layout.dialog_for_register_success);
+
+        // set text
+        final TextView tv = (TextView) d.findViewById(R.id.delete_user_text_view);
+        final String ALERT_MESSAGE_BODY_TEXT = " 님을 사용자 목록에서 삭제하시겠어요?";
+        String textBody = userName + ALERT_MESSAGE_BODY_TEXT;
+        tv.setText(textBody);
+
+
+        // add event listener to the button to handle onClick event
+
+        final Button yesButton = d.findViewById(R.id.delete_user_button_yes);
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO remove user
+
+                d.dismiss();
+            }
+        });
+
+        final Button noButton = d.findViewById(R.id.delete_user_button_no);
+        noButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), getText(R.string.cancel_delete_user), Toast.LENGTH_SHORT).show();
+                d.dismiss();
+            }
+        });
     }
 }
