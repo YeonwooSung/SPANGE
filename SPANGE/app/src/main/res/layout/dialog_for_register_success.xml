@@ -3,17 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+
+    android:maxHeight="300dp"
+    android:minHeight="300dp"
+    android:maxWidth="300dp"
+    android:minWidth="300dp"
+
+    android:layout_gravity="center_horizontal"
+    android:foregroundGravity="center_horizontal"
     android:id="@+id/dialog_setting_activity"
-    android:background="@drawable/popup_signin">
+    android:background="@drawable/signin_popup_baackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_button_ok_setting_activity"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/signin_popup_text"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sign_in_dialog_text_view"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in_sample_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor_darkGray"/>
+
+    </LinearLayout>
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="142dp"
         android:id="@+id/dialog_button_ok_setting_activity"
-        android:background="@android:color/transparent"
+        android:layout_width="240dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/signin_popup_button_ok"
         android:textColor="@color/cast_expanded_controller_text_color"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

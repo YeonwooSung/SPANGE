@@ -1,23 +1,17 @@
 package com.technonia.spange;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,20 +20,13 @@ import android.widget.Toast;
 import java.util.HashSet;
 import java.util.Set;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText editText_device_id;
     private EditText editText_user_id;
-    private Button btn_set_device_id;
-    private Button btn_exit;
-    private Button btn_manager;
-
-    private final String ERR_MSG_INVALID_DEVICE_ID = "Invalid device id";
-    private final String ERR_MSG_EXCEED_MAX_USER_NUM = "Exceeded the max user number";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +44,8 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean terminate() {
+    private void terminate() {
         finish();
-        return true;
     }
 
     private void changeBackgroundOfEditText_deviceID(int type) {
@@ -152,9 +138,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initButtons() {
         // find Buttons
-        btn_set_device_id = findViewById(R.id.device_id_button);
-        btn_exit = findViewById(R.id.exit_button_id);
-        btn_manager = findViewById(R.id.manager_button_id);
+        Button btn_set_device_id = findViewById(R.id.device_id_button);
+        Button btn_exit = findViewById(R.id.exit_button_id);
+        Button btn_manager = findViewById(R.id.manager_button_id);
 
         // set buttons clickable
         btn_set_device_id.setClickable(true);
@@ -212,48 +198,39 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showAlertDialog(String adminName) {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
         View dialogLayout = inflater.inflate(R.layout.dialog_for_register_success, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogLayout);
 
-        //builder.show();
+        // create alert dialog
+        final AlertDialog d = builder.create();
 
-        AlertDialog d = builder.create();
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        //d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = d.getWindow();
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        window.setGravity(Gravity.CENTER);
+
         d.show();
-
         d.setContentView(R.layout.dialog_for_register_success);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int display_height = displayMetrics.heightPixels;
-        int display_width = displayMetrics.widthPixels;
-        int dialog_height = (int) (display_height * 0.4);
-        int dialog_width = (int) (display_width * 0.9);
+        // set text
+        final TextView tv = (TextView) d.findViewById(R.id.sign_in_dialog_text_view);
+        String ALERT_MESSAGE_BODY_TEXT = "님이 등록을 수락하면 스팡이를 시작하실 수 있습니다.";
+        String textBody = adminName + ALERT_MESSAGE_BODY_TEXT;
+        tv.setText(textBody);
 
-//        Dialog d = new Dialog(SettingsActivity.this);
-//        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        d.setContentView(R.layout.dialog_for_register_success);
-
-        //final TextView tv = (TextView) d.findViewById(R.id.textView1);
-
+        // add event listener to the button to handle onClick event
         final Button button = (Button) d.findViewById(R.id.dialog_button_ok_setting_activity);
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+                d.dismiss();
                 terminate();
             }
         });
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-
-        lp.copyFrom(d.getWindow().getAttributes());
-        lp.width = dialog_width;
-        lp.height = dialog_height;
-        //d.show();
-        d.getWindow().setAttributes(lp);
     }
 
     private void setErrorToEditText(EditText editText, CharSequence toastMsg, CharSequence errorMsg) {
@@ -276,6 +253,8 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d("RegisterDevice", result_str);
 
         // check if result_str is equal to the error message
+        String ERR_MSG_INVALID_DEVICE_ID = "Invalid device id";
+        String ERR_MSG_EXCEED_MAX_USER_NUM = "Exceeded the max user number";
         if (result_str.equals(ERR_MSG_INVALID_DEVICE_ID)) {
             changeBackgroundOfEditText_deviceID(3);
             setErrorToEditText(editText_device_id, getText(R.string.setting_toast_msg_invalid_device_id), getText(R.string.setting_edit_text_error_msg_device_id_invalid));
