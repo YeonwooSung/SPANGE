@@ -3,13 +3,14 @@ package com.technonia.spange;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,9 +28,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private final double DEFAULT_LATITUDE = 0.0;
     private final double DEFAULT_LONGITUDE = 0.0;
-
-    private final float ALERT_TITLE_FONT_SIZE = 23f;
-    private final float ALERT_MSG_FONT_SIZE = 20f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,13 +88,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void generateMessageToHandleLatLngError() {
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
+        View dialogLayout = inflater.inflate(R.layout.dialog_for_fail_map, null);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getText(R.string.maps_activity_alert_msg_title)).setMessage(getText(R.string.maps_activity_alert_msg_body));
+        builder.setView(dialogLayout);
 
 
-        builder.setPositiveButton(getText(R.string.maps_activity_alert_ok_button_str), new DialogInterface.OnClickListener(){
+        // generate alert instance
+        final AlertDialog alertDialog = builder.create();
+
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // make background transparent, and set gravity to "center"
+        Window window = alertDialog.getWindow();
+        assert window != null;
+        window.setBackgroundDrawableResource(android.R.color.transparent);
+        window.setGravity(Gravity.CENTER);
+
+        // make dialog alert visible
+        alertDialog.show();
+
+        alertDialog.setContentView(R.layout.dialog_for_fail_map);
+
+
+        // add event listeners to buttons
+
+        final Button noButton = (Button) alertDialog.findViewById(R.id.map_popup_button_no);
+        noButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int id) {
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), getText(R.string.maps_activity_toast_msg_cancel), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final Button yesButton = (Button) alertDialog.findViewById(R.id.map_popup_button_yes);
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), getText(R.string.maps_activity_toast_msg_ok), Toast.LENGTH_SHORT).show();
 
                 // Generate intent for navigation, and navigate to the RealtimeMap Activity
@@ -106,44 +136,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 finish();  // finish this activity
             }
         });
-
-
-        /**
-         * If the user press the cancel button, the app will remain in the current screen
-         */
-        builder.setNegativeButton(getText(R.string.maps_activity_alert_no_button_str), new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getApplicationContext(), getText(R.string.maps_activity_toast_msg_cancel), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        // generate alert instance
-        AlertDialog alertDialog = builder.create();
-
-        // make dialog alert visible
-        alertDialog.show();
-
-        // increase the font size of the alert title
-        final int alertTitle = getResources().getIdentifier("alertTitle", "id", "android");
-        TextView title = (TextView) alertDialog.findViewById(alertTitle);
-        // to avoid the NullPointerException
-        if (title != null)
-            title.setTextSize(ALERT_TITLE_FONT_SIZE);
-
-        // increase the font size of alert message
-        TextView message = (TextView) alertDialog.findViewById(android.R.id.message);
-
-        // to avoid the NullPointerException
-        if (message != null)
-            message.setTextSize(ALERT_MSG_FONT_SIZE);
-
-        // increase the font size of buttons
-        Button possitive_button = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
-        Button negative_button = alertDialog.getButton(Dialog.BUTTON_NEGATIVE);
-
-        if (possitive_button != null) possitive_button.setTextSize(ALERT_MSG_FONT_SIZE);
-        if (negative_button != null) negative_button.setTextSize(ALERT_MSG_FONT_SIZE);
     }
 }
