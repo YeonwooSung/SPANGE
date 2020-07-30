@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_signup"
-    android:gravity="center"
+    android:gravity="center_horizontal"
+    android:layout_gravity="center_horizontal"
     android:orientation="vertical">
 
     <Button
@@ -31,7 +32,7 @@
         android:id="@+id/user_id_edit_text"
         android:layout_width="280dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/blank_user_off"
         android:ems="30"
         android:gravity="center"
@@ -64,10 +65,10 @@
         android:id="@+id/device_id_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
+        android:layout_marginStart="50dp"
         android:layout_marginBottom="50dp"
         android:background="@drawable/button_signup"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/device_id_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
