@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void changeBackgroundOfEditText_deviceID(int type) {
-        Drawable bg = null;
+        Drawable bg;
 
         switch (type) {
             case 1:
@@ -62,14 +62,14 @@ public class SettingsActivity extends AppCompatActivity {
                 bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_caution);
                 break;
             default:
-                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_device_off);
+                return;
         }
 
         editText_device_id.setBackground(bg);
     }
 
     private void changeBackgroundOfEditText_userID(int type) {
-        Drawable bg = null;
+        Drawable bg;
 
         switch (type) {
             case 1:
@@ -82,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
                 bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_caution);
                 break;
             default:
-                bg = ContextCompat.getDrawable(getApplicationContext(), R.drawable.blank_user_off);
+                return;
         }
 
         editText_user_id.setBackground(bg);
@@ -168,8 +168,6 @@ public class SettingsActivity extends AppCompatActivity {
                     return;
                 }
 
-                // If the system registered the device id successfully, then finish this activity, and go back to the Main activity
-                //if (registerDeviceID(device_id_str)) terminate();
                 showAlertDialog("Test Admin");
             }
 
@@ -197,7 +195,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void showAlertDialog(String adminName) {
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+        getApplicationContext();
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         View dialogLayout = inflater.inflate(R.layout.dialog_for_register_success, null);
 
@@ -224,13 +224,19 @@ public class SettingsActivity extends AppCompatActivity {
         String textBody = adminName + ALERT_MESSAGE_BODY_TEXT;
         tv.setText(textBody);
 
+        final String device_id_str = getDeviceIdFromTextInput();
+
         // add event listener to the button to handle onClick event
         final Button button = (Button) d.findViewById(R.id.dialog_button_ok_setting_activity);
         button.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 d.dismiss();
-                terminate();
+
+                // If the system registered the device id successfully, then finish this activity, and go back to the Main activity
+                if (registerDeviceID(device_id_str)) {
+                    terminate();
+                }
             }
         });
     }
@@ -251,7 +257,10 @@ public class SettingsActivity extends AppCompatActivity {
         String not_found = getString(R.string.not_found_invalid_key);
         String fcm_token_str = sp.getString(getString(R.string.fcm_token_key),not_found);
 
-        String result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL, user_id, device_id_str);
+        String result_str = NetworkUtils.sendRequestToRegisterDevice(baseURL,
+                user_id,
+                device_id_str
+        );
         Log.d("RegisterDevice", result_str);
 
         // check if result_str is equal to the error message

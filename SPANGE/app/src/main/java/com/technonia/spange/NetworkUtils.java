@@ -26,10 +26,16 @@ public class NetworkUtils {
         return sendPOSTRequest(urlStr, token, null, device_id);
     }
 
-    static String sendRequestForAcceptUser(String baseURL, String user_id, String device_id) {
-        String urlStr = baseURL + "/spangeNotification/acceptUser?userID=" + user_id + "&deviceID" + device_id;
+    static String sendRequestToAcceptUser(String baseURL, String user_id, String device_id) {
+        String urlStr = baseURL + "/spangeNotification/acceptUser?userID=" + user_id + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
         return sendPOSTRequest(urlStr, null, user_id, device_id);
+    }
+
+    static String sendRequestToDeleteUserInfo(String baseURL, String user_id, String device_id) {
+        String urlStr = baseURL + "/spangeNotification/deleteUser?userID=" + user_id + "&deviceID=" + device_id;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(baseURL, null, user_id, device_id);
     }
 
     static String sendRequestToUpdateToken(String baseURL, String previousToken, String newToken) {

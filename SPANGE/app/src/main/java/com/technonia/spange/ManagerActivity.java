@@ -14,16 +14,14 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ManagerActivity extends AppCompatActivity {
-    private final int MAX_USER_NUM = 5;
 
-    private ArrayList<UserAcceptance> userList = new ArrayList<UserAcceptance>();
+    private ArrayList<UserAcceptance> userList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +43,7 @@ public class ManagerActivity extends AppCompatActivity {
         int lastAcceptedUserNum = 0;
 
         ArrayList<UserAcceptance> tempList = new ArrayList<>();
+        final int MAX_USER_NUM = 5;
 
         for (int i = 0; i < MAX_USER_NUM; i++) {
             String userName = userNames[i];
@@ -103,7 +102,7 @@ public class ManagerActivity extends AppCompatActivity {
         finish();
     }
 
-    private void updateUserAcceptance(int index) {
+    private void updateUserAcceptance_removeUser(int index) {
         userList.remove(index);
         userList.add(null);
     }
@@ -211,7 +210,7 @@ public class ManagerActivity extends AppCompatActivity {
         String baseURL = getString(R.string.baseURL);
 
         // send request via network to change the user status as accepted
-        NetworkUtils.sendRequestForAcceptUser(baseURL, userID, deviceID);
+        NetworkUtils.sendRequestToAcceptUser(baseURL, userID, deviceID);
     }
 
     private void updateUserName(int num, String userName) {
@@ -245,23 +244,30 @@ public class ManagerActivity extends AppCompatActivity {
         }
 
         textView.setText(userName);
-        addEventListenerToExitButton(num, userName, button);
+
+        String user_id = userList.get(num).getUserID();
+        addEventListenerToExitButton(num, userName, user_id, button);
     }
 
-    private void addEventListenerToExitButton(final int num, String userName, ImageButton button) {
+    private void addEventListenerToExitButton(final int num, String userName, String user_id, ImageButton button) {
         final String userNameStr = userName;
-        final int number = num;
+        final String userID = user_id;
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialogForDeleteUser(number, userNameStr);
+                showAlertDialogForDeleteUser(num,
+                        userNameStr,
+                        userID
+                );
             }
         });
     }
 
-    private void showAlertDialogForDeleteUser(int num, String userName) {
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
+    private void showAlertDialogForDeleteUser(int num, String userName, String userID) {
+        getApplicationContext();
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         View dialogLayout = inflater.inflate(R.layout.dialog_for_delete_user, null);
 
@@ -288,6 +294,7 @@ public class ManagerActivity extends AppCompatActivity {
         tv.setText(textBody);
 
         final int index = num;
+        final String user_id = userID;
 
 
         // add event listener to the button to handle onClick event
@@ -296,13 +303,14 @@ public class ManagerActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO send request to delete user
+                String baseURL = getString(R.string.baseURL);
+                NetworkUtils.sendRequestToDeleteUserInfo(baseURL, user_id, Utils.getDeviceID());
 
                 // dismiss the alert dialog
                 d.dismiss();
 
                 // update the User cards
-                updateUserAcceptance(index);
+                updateUserAcceptance_removeUser(index);
                 updateUserCards();
             }
         });
