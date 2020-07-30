@@ -48,6 +48,7 @@ public class ManagerActivity extends AppCompatActivity {
 
         for (int i = 0; i < MAX_USER_NUM; i++) {
             String userName = userNames[i];
+            String userID = userNames[i];
             boolean acceptance = acceptances[i];
 
             // check if there are no more users
@@ -56,7 +57,7 @@ public class ManagerActivity extends AppCompatActivity {
                 continue;
             }
 
-            UserAcceptance user = new UserAcceptance(userName, acceptance);
+            UserAcceptance user = new UserAcceptance(userName, userID, acceptance);
 
             // check if the current user is accepted
             if (acceptance) {
@@ -100,6 +101,11 @@ public class ManagerActivity extends AppCompatActivity {
 
     private void terminate() {
         finish();
+    }
+
+    private void updateUserAcceptance(int index) {
+        userList.remove(index);
+        userList.add(null);
     }
 
     private void addEventListenerToBackButton() {
@@ -175,6 +181,37 @@ public class ManagerActivity extends AppCompatActivity {
 
         layout.setBackground(bg);
         button.setImageResource(R.drawable.button_accept);
+
+        addOnClickListenerToAcceptButton(num, button);
+    }
+
+    private void addOnClickListenerToAcceptButton(int num, ImageButton button) {
+        final ImageButton targetButton = button;
+        final int number = num;
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // do nothing if the user is accepted
+                if (userList.get(number).isAccepted()) return;
+
+                acceptUser(number);
+                targetButton.setImageResource(R.drawable.button_accepted);
+            }
+        });
+    }
+
+    private void acceptUser(int num) {
+        // make the user accepted
+        UserAcceptance user = userList.get(num);
+        user.setAcceptance(true);
+
+        String userID = user.getUserID();
+        String deviceID = Utils.getDeviceID();
+        String baseURL = getString(R.string.baseURL);
+
+        // send request via network to change the user status as accepted
+        NetworkUtils.sendRequestForAcceptUser(baseURL, userID, deviceID);
     }
 
     private void updateUserName(int num, String userName) {
@@ -184,23 +221,23 @@ public class ManagerActivity extends AppCompatActivity {
         switch (num) {
             case 0:
                 textView = findViewById(R.id.manager_activity_grid_layout_row0_text);
-                button = findViewById(R.id.manager_activity_img_button_row0);
+                button = findViewById(R.id.manager_activity_exit_button_row0);
                 break;
             case 1:
                 textView = findViewById(R.id.manager_activity_grid_layout_row1_text);
-                button = findViewById(R.id.manager_activity_img_button_row1);
+                button = findViewById(R.id.manager_activity_exit_button_row1);
                 break;
             case 2:
                 textView = findViewById(R.id.manager_activity_grid_layout_row2_text);
-                button = findViewById(R.id.manager_activity_img_button_row2);
+                button = findViewById(R.id.manager_activity_exit_button_row2);
                 break;
             case 3:
                 textView = findViewById(R.id.manager_activity_grid_layout_row3_text);
-                button = findViewById(R.id.manager_activity_img_button_row3);
+                button = findViewById(R.id.manager_activity_exit_button_row3);
                 break;
             case 4:
                 textView = findViewById(R.id.manager_activity_grid_layout_row4_text);
-                button = findViewById(R.id.manager_activity_img_button_row4);
+                button = findViewById(R.id.manager_activity_exit_button_row4);
                 break;
             default:
                 Log.e("InvalidArgument", "Invalid argument: " + num);
@@ -208,19 +245,22 @@ public class ManagerActivity extends AppCompatActivity {
         }
 
         textView.setText(userName);
-        addEventListener(userName, button);
+        addEventListenerToExitButton(num, userName, button);
     }
 
-    private void addEventListener(final String userName, ImageButton button) {
+    private void addEventListenerToExitButton(final int num, String userName, ImageButton button) {
+        final String userNameStr = userName;
+        final int number = num;
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAlertDialogForDeleteUser(userName);
+                showAlertDialogForDeleteUser(number, userNameStr);
             }
         });
     }
 
-    private void showAlertDialogForDeleteUser(String userName) {
+    private void showAlertDialogForDeleteUser(int num, String userName) {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(getApplicationContext().LAYOUT_INFLATER_SERVICE);
         assert inflater != null;
         View dialogLayout = inflater.inflate(R.layout.dialog_for_delete_user, null);
@@ -239,13 +279,15 @@ public class ManagerActivity extends AppCompatActivity {
         window.setGravity(Gravity.CENTER);
 
         d.show();
-        d.setContentView(R.layout.dialog_for_register_success);
+        d.setContentView(R.layout.dialog_for_delete_user);
 
         // set text
         final TextView tv = (TextView) d.findViewById(R.id.delete_user_text_view);
         final String ALERT_MESSAGE_BODY_TEXT = " 님을 사용자 목록에서 삭제하시겠어요?";
         String textBody = userName + ALERT_MESSAGE_BODY_TEXT;
         tv.setText(textBody);
+
+        final int index = num;
 
 
         // add event listener to the button to handle onClick event
@@ -254,9 +296,14 @@ public class ManagerActivity extends AppCompatActivity {
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO remove user
+                //TODO send request to delete user
 
+                // dismiss the alert dialog
                 d.dismiss();
+
+                // update the User cards
+                updateUserAcceptance(index);
+                updateUserCards();
             }
         });
 

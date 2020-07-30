@@ -210,6 +210,8 @@ public class SettingsActivity extends AppCompatActivity {
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         Window window = d.getWindow();
+        assert window != null;
+
         window.setBackgroundDrawableResource(android.R.color.transparent);
         window.setGravity(Gravity.CENTER);
 

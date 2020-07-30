@@ -26,6 +26,12 @@ public class NetworkUtils {
         return sendPOSTRequest(urlStr, token, null, device_id);
     }
 
+    static String sendRequestForAcceptUser(String baseURL, String user_id, String device_id) {
+        String urlStr = baseURL + "/spangeNotification/acceptUser?userID=" + user_id + "&deviceID" + device_id;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, user_id, device_id);
+    }
+
     static String sendRequestToUpdateToken(String baseURL, String previousToken, String newToken) {
         String urlStr = baseURL + "/spangeNotification/updateToken?previousToken=" + previousToken + "&newToken=" + newToken;
         Log.d("URL", urlStr);
@@ -112,11 +118,7 @@ public class NetworkUtils {
             conn.disconnect();
 
             return result_of_request;
-        } catch (IOException e) {
-            //TODO
-            return e.getMessage();
-        } catch (JSONException e) {
-            //TODO
+        } catch (IOException | JSONException e) {
             return e.getMessage();
         }
     }
