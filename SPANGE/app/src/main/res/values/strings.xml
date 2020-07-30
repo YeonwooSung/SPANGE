@@ -1,21 +1,32 @@
 <resources>
     <string name="app_name">SPANGE</string>
+
+    <!-- Screen Names -->
+    <string name="title_activity_realtime_map">RealTimeMap</string>
+    <string name="title_activity_route_map">RouteMap</string>
     <string name="title_activity_settings">기기 등록</string>
 
+
     <string name="baseURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
+
 
     <!--Strings for Setting screen-->
     <string name="text_input_device_id">기기 아이디</string>
     <string name="text_input_user_id">사용자 아이디</string>
     <string name="setting_activity_button_ok">OK</string>
+
     <string name="setting_toast_msg_empty_device_id">device id가 빈칸입니다</string>
     <string name="setting_toast_msg_empty_user_id">사용자 id가 빈칸입니다</string>
     <string name="setting_toast_msg_invalid_device_id">올바르지 않은 기기 번호 입니다</string>
     <string name="setting_toast_msg_max_user_num">최대 사용자 수 초과</string>
+
     <string name="setting_edit_text_error_msg_device_id_empty">기기 ID를 입력해 주세요</string>
     <string name="setting_edit_text_error_msg_user_id_empty">사용자 ID를 입력해 주세요</string>
     <string name="setting_edit_text_error_msg_device_id_invalid">등록되지 않은 기기입니다. 다시 확인해 주시기 바랍니다.</string>
     <string name="setting_edit_text_error_msg_exceed_max_user">해당 기기에 등록 가능한 최대 사용자 수를 초과하여 등록이 실패했습니다.</string>
+
+    <string name="setting_screen_alert_msg_body_signup_finish">님이 등록을 수락하면 스팡이를 시작하실 수 있습니다</string>
+
 
     <!--Strings for SharedPreferences   -->
     <string name="shared_preferences_file_name">SPANGE@SharedPreferences</string>
@@ -25,14 +36,14 @@
     <string name="not_found_invalid_key">SharedPreferences@key_not_found</string>
     <string name="title_activity_maps">Map</string>
 
+
     <!--Extra Strings for Push Notification Intent-->
     <string name="push_notification_key_push_notification">push_notification</string>
     <string name="push_notification_key_latitude">latitude</string>
     <string name="push_notification_key_longitude">longitude</string>
 
     <string name="extra_str_key_user_id">user_id</string>
-    <string name="title_activity_realtime_map">RealTimeMap</string>
-    <string name="title_activity_route_map">RouteMap</string>
+
 
     <!--Strings for Maps (push notification) screen-->
     <string name="maps_activity_alert_msg_title">위치 데이터 수신 실패</string>
@@ -49,4 +60,5 @@
     <string name="alert_dialog_register_device"> 대표 사용자님이 등록을 수락하면 스팡이를 시작하실 수 있습니다.</string>
     <string name="sign_in_sample_text">스팡이123님이 등록을 수락하면 스팡이를 시작하실 수 있습니다</string>
     <string name="delete_user_text">스팡이 사용자 님을 사용자 목록에서 삭제하시겠어요?</string>
+
 </resources>

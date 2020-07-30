@@ -220,7 +220,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // set text
         final TextView tv = (TextView) d.findViewById(R.id.sign_in_dialog_text_view);
-        String ALERT_MESSAGE_BODY_TEXT = "님이 등록을 수락하면 스팡이를 시작하실 수 있습니다.";
+        String ALERT_MESSAGE_BODY_TEXT = getString(R.string.setting_screen_alert_msg_body_signup_finish);
         String textBody = adminName + ALERT_MESSAGE_BODY_TEXT;
         tv.setText(textBody);
 
