@@ -3,10 +3,12 @@ package com.technonia.spange;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,6 +24,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -32,15 +37,15 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     private double previousLongitude;
 
     private final long interval_time = 60000;
-    private static String userID = "app_test";
+    private static String userID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_realtime_map);
 
-        // set member key
-        Utils.setmMemberKey("");
+        // get userID
+        RealtimeMap.userID = getUserID();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -102,6 +107,9 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         mMap = googleMap;
         this.setPreviousLatLng(Utils.DEFAULT_LATITUDE, Utils.DEFAULT_LONGITUDE);
 
+        // initialise the screen
+        init();
+
         String response = NetworkUtils.sendRequestToGetRecentLocation();
         JSONObject jsonObj = Utils.parseResponse(response);
 
@@ -128,6 +136,55 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
 
         this.setPreviousLatLng(latitude, longitude);
         setLocationForMap(latitude, longitude, deviceName, false);
+    }
+
+    private void init() {
+        String sp_name = getString(R.string.shared_preferences_file_name);
+        String device_id_key = getString(R.string.device_id_key);
+        SharedPreferences sp = getSharedPreferences(sp_name, MODE_PRIVATE);
+
+        Set<String> deviceIdSet = sp.getStringSet(device_id_key, new HashSet<String>());
+
+        //TODO error handling
+        if (deviceIdSet.isEmpty()) return;
+
+        //TODO deviceIdSet.toArray()[0]
+        String deviceID = (String) deviceIdSet.toArray()[0];
+        Log.d("deviceID", deviceID);
+
+        String baseURL = getString(R.string.baseURL);
+        String res = NetworkUtils.sendRequestToGetMemberKey(baseURL, deviceID);
+        if (res.startsWith("Error")) return;
+
+        // get member key
+        String memberKey = getMemberKeyByProcessResponse(res);
+        if (memberKey == null) return;
+
+        // set member key and device id
+        Utils.setDeviceID(deviceID);
+        Utils.setmMemberKey(memberKey);
+    }
+
+    private String getUserID() {
+        String sp_name = getString(R.string.shared_preferences_file_name);
+        String user_id_key = getString(R.string.user_id_key);
+        SharedPreferences sp = getSharedPreferences(sp_name, MODE_PRIVATE);
+
+        return sp.getString(user_id_key, "");
+    }
+
+    private String getMemberKeyByProcessResponse(String res) {
+        JSONObject jsonObject = Utils.parseResponse(res);
+
+        if (jsonObject != null) {
+            try {
+                return jsonObject.getString("device_member_key");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 
     private void getDataAndUpdateMap() {
@@ -169,19 +226,6 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
 
     private void setUpButtons() {
         Button btn_settings = (Button)findViewById(R.id.btn_setting_realtime);
-
-        // get layout params of the navigation button
-        LinearLayout.LayoutParams btn_lp = (LinearLayout.LayoutParams) btn_settings.getLayoutParams();
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int display_height = displayMetrics.heightPixels;
-        int button_height = display_height / 10;
-
-        // update the button height
-        btn_lp.height = button_height;
-        btn_settings.setLayoutParams(btn_lp);
-
         btn_settings.setClickable(true);
 
         // add the event listener for the button

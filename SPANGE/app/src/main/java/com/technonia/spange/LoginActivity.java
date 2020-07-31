@@ -3,6 +3,7 @@ package com.technonia.spange;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,8 @@ import android.widget.EditText;
 
 import com.technonia.spange.login.LoginFormValidator;
 import com.technonia.spange.login.LoginSessionManager;
+
+import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +28,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // use strict mode to allow the main thread to use the networking functions
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         initScreen();
         addEventListenerToButtons();
@@ -70,16 +77,32 @@ public class LoginActivity extends AppCompatActivity {
 
         if (email.isEmpty() || pw.isEmpty()) return false;
 
-        //TODO send request for log in
+        // send request for log in
+        String baseURL = getString(R.string.baseURL);
+        String res = NetworkUtils.sendRequestForLogin(baseURL, email, pw);
 
-        String res = "abcdefg"; //TODO this is the response from the server, which is the result of log in request
+        Log.d("Response", res);
 
-        //TODO return false if error occurred
+        if (res.startsWith("Error")) return false;
+
+        JSONObject jsonObject = Utils.parseResponse(res);
 
         String sp_name = getString(R.string.shared_preferences_file_name);
+        String username_key = getString(R.string.user_id_key);
         SharedPreferences sp = getSharedPreferences(sp_name, MODE_PRIVATE);
 
-        sessionManager.storeSessionInfo(res, sp);
+        String user_id = sessionManager.storeSessionInfo(jsonObject, username_key, sp);
+        if (user_id == null) return false;
+
+
+        // get device id
+        String device_id_key = getString(R.string.device_id_key);
+        String response_str = NetworkUtils.sendRequestToGetDeviceID(baseURL, user_id);
+        JSONObject jsonObject_deviceID = Utils.parseResponse(response_str);
+
+        String device_id = sessionManager.storeDeviceID(jsonObject_deviceID, device_id_key, sp);
+        if (device_id == null) return false;
+
         return true;
     }
 

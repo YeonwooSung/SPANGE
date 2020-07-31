@@ -168,6 +168,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return;
                 }
 
+                //TODO
                 showAlertDialog("Test Admin");
             }
 
@@ -284,7 +285,7 @@ public class SettingsActivity extends AppCompatActivity {
         updateGCMTokenIfUserIDIsValid(baseURL, fcm_token_str, user_id);
 
         // store the device_id_str
-        storeDeviceId_localStorage(sp, device_id_str);
+        //TODO storeDeviceId_localStorage(sp, device_id_str);
 
         return true;
     }
@@ -295,7 +296,7 @@ public class SettingsActivity extends AppCompatActivity {
         /*
          * If the user_id is valid, send request to register (or update) the GCM token
          */
-        if (user_id != null && !user_id.equals("")&& !fcm_token_str.equals(not_found)) {
+        if (user_id != null && !user_id.isEmpty() && !fcm_token_str.equals(not_found)) {
             String result_str = NetworkUtils.sendRequestForRegisterUser(baseURL, user_id, fcm_token_str);
             Log.d("NewDeviceRequest", result_str);
         }
@@ -305,9 +306,6 @@ public class SettingsActivity extends AppCompatActivity {
         String stringSetKey = getString(R.string.device_id_key);
         Set<String> device_id_set = sp.getStringSet(stringSetKey, new HashSet<String>());
         device_id_set.add(new_device_id);
-
-        // debugging message
-        Log.d("Set<String>", device_id_set.toString());
 
         // edit the content of the local storage
         Editor editor = sp.edit();

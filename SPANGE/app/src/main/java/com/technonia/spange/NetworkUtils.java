@@ -27,13 +27,13 @@ public class NetworkUtils {
     }
 
     static String sendRequestToAcceptUser(String baseURL, String user_id, String device_id) {
-        String urlStr = baseURL + "/spangeNotification/acceptUser?userID=" + user_id + "&deviceID=" + device_id;
+        String urlStr = baseURL + "/spange/acceptUser?userID=" + user_id + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
         return sendPOSTRequest(urlStr, null, user_id, device_id);
     }
 
     static String sendRequestToDeleteUserInfo(String baseURL, String user_id, String device_id) {
-        String urlStr = baseURL + "/spangeNotification/deleteUser?userID=" + user_id + "&deviceID=" + device_id;
+        String urlStr = baseURL + "/spange/deleteUser?userID=" + user_id + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
         return sendPOSTRequest(baseURL, null, user_id, device_id);
     }
@@ -45,15 +45,33 @@ public class NetworkUtils {
     }
 
     static String sendRequestToRegisterDevice(String baseURL, String user_id, String device_id) {
-        String urlStr = baseURL + "/spangeNotification/registerDevice?userID=" + user_id + "&deviceID=" + device_id;
+        String urlStr = baseURL + "/spange/registerDevice?userID=" + user_id + "&deviceID=" + device_id;
         Log.d("URL", urlStr);
         return sendPOSTRequest(urlStr, null, user_id, device_id);
     }
 
     static String sendRequestForRegisterUser(String baseURL, String user_id, String token) {
-        String urlStr = baseURL + "/spangeNotification/registerUser?userID=" + user_id + "&token=" + token;
+        String urlStr = baseURL + "/spange/registerUser?userID=" + user_id + "&token=" + token;
         Log.d("URL", urlStr);
         return sendPOSTRequest(urlStr, token, user_id, null);
+    }
+
+    static String sendRequestForLogin(String baseURL, String email, String password) {
+        String urlStr = baseURL + "/spangeLogin?email=" + email + "&password=" + password;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, null, null);
+    }
+
+    static String sendRequestToGetDeviceID(String baseURL, String user_id) {
+        String urlStr = baseURL + "/spangeLogin/getDevice?username=" + user_id;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, user_id, null);
+    }
+
+    static String sendRequestToGetMemberKey(String baseURL, String device_id) {
+        String urlStr = baseURL + "/spangeLogin/getMemberKey?deviceID=" + device_id;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, null, device_id);
     }
 
     private static String sendPOSTRequest(String urlStr, String token, String user_id, String device_id) {

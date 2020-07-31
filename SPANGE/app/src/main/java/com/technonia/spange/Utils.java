@@ -14,12 +14,21 @@ public class Utils {
     private static String mApiKey = "[YOUR_API_KEY]";
     private static String mServerKey = "[YOUR SERVER KEY]";
     private static String mMemberKey =  "";
+    private static String deviceID = "";
 
     public static final double DEFAULT_LATITUDE = 35.182160;
     public static final double DEFAULT_LONGITUDE = 126.898841;
 
     static void setmMemberKey(String mMemberKey) {
         Utils.mMemberKey = mMemberKey;
+    }
+
+    static void setDeviceID(String device_id) {
+        Utils.deviceID = device_id;
+    }
+
+    static String getDeviceID() {
+        return Utils.deviceID;
     }
 
     static String getUrlForRecentLocation() {
