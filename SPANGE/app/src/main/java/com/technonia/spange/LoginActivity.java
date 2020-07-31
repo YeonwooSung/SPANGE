@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void navigateToRegisterScreen() {
         //TODO replace class name in the intent with suitable class name (register activity) !!!!
-        Intent intent = new Intent(this, RealtimeMap.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 }

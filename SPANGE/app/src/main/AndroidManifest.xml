@@ -40,10 +40,10 @@
         <activity android:name=".ManagerActivity" />
 
         <!-- Login screen -->
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-        />
+        <activity android:name=".LoginActivity" android:label="@string/title_activity_login" />
+
+        <!-- Sign up screen -->
+        <activity android:name=".SignUpActivity" android:label="@string/title_activity_signup" />
 
         <!-- Activity that launches if and only if the user click the push notification -->
         <activity

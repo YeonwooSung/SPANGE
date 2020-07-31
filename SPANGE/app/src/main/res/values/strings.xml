@@ -6,10 +6,10 @@
     <string name="title_activity_route_map">RouteMap</string>
     <string name="title_activity_settings">기기 등록</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_signup">SignupActivity</string>
 
 
-    <string name="testURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
-    <string name="baseURL">http://172.30.1.7:8090</string>
+    <string name="baseURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
 
 
     <!--Strings for Setting screen-->
@@ -67,8 +67,10 @@
     <!-- Login Screen -->
     <string name="prompt_email">이메일 주소</string>
     <string name="prompt_password">비밀번호</string>
+    <string name="prompt_username">사용자 이름</string>
     <string name="action_sign_in">로그인</string>
     <string name="action_sign_up">회원가입</string>
+    <string name="action_goBack_login">뒤로가기</string>
 
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
