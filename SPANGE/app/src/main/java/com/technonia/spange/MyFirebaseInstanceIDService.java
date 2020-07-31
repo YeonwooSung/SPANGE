@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
@@ -41,7 +42,6 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
 
                 if (result_of_registration.contains("Exception")) {
                     Log.e("Exception", result_of_registration);
-                    //TODO check if some exception occurred while sending the data to the server
                 }
             }
         }
@@ -115,7 +115,6 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         intent.putExtra(appContext.getString(R.string.push_notification_key_latitude), latitude);
         intent.putExtra(appContext.getString(R.string.push_notification_key_longitude), longitude);
 
-        //TODO
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -140,7 +139,8 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channel)
-                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            //.setSmallIcon(R.drawable.ic_launcher_background)
+                            .setSmallIcon(R.mipmap.ic_launcher_new)  //TODO need to test
                             .setContentTitle(title)
                             .setContentText(message)
                             .setContentIntent(pendingIntent)
@@ -159,7 +159,8 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         } else {
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channel)
-                            .setSmallIcon(R.drawable.ic_launcher_background)
+                            //.setSmallIcon(R.drawable.ic_launcher_background)
+                            .setSmallIcon(R.mipmap.ic_launcher_new)  //TODO need to test
                             .setContentTitle(title)
                             .setContentText(message)
                             .setContentIntent(pendingIntent)

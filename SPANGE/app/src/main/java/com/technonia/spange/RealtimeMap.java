@@ -70,6 +70,8 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
             }
         };
         m_handler.postDelayed(runnable, interval_time);
+
+        //TODO 5초 기다린 뒤에 파이어베이스 토큰과 사용자 이름을 전송 -> 토큰 등록하기
     }
 
     @Override

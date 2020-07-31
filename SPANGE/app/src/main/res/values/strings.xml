@@ -9,7 +9,8 @@
     <string name="title_activity_signup">SignupActivity</string>
 
 
-    <string name="baseURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
+    <string name="testURL">http://ec2-15-164-218-172.ap-northeast-2.compute.amazonaws.com:8090</string>
+    <string name="baseURL">http://172.30.1.7:8090</string>
 
 
     <!--Strings for Setting screen-->

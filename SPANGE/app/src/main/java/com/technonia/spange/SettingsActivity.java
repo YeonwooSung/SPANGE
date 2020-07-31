@@ -168,7 +168,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return;
                 }
 
-                //TODO
+                //TODO should not hard-code the admin id
                 showAlertDialog("Test Admin");
             }
 

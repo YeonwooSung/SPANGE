@@ -38,6 +38,7 @@ public class ManagerActivity extends AppCompatActivity {
     }
 
     private void initUserList() {
+        //TODO need to test with not-hardcoded data!
         String[] userNames = {"사용자1", "사용자2", "사용자3", "사용자4", null};
         boolean[] acceptances = {true, true, false, true, false};
         int lastAcceptedUserNum = 0;
