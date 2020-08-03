@@ -17,11 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.technonia.spange.manager.SessionManager;
+import com.technonia.spange.manager.UserAcceptance;
+
 import java.util.ArrayList;
 
 public class ManagerActivity extends AppCompatActivity {
 
-    private ArrayList<UserAcceptance> userList = new ArrayList<>();
+    private SessionManager sessionManager;
+    private ArrayList<UserAcceptance> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,52 +36,20 @@ public class ManagerActivity extends AppCompatActivity {
     }
 
     private void initScreen() {
+        sessionManager = new SessionManager(RealtimeMap.getAdminUserID());
+        userList = new ArrayList<>();
+
         initUserList();
         updateUserCards();
         addEventListenerToBackButton();
     }
 
     private void initUserList() {
-        //TODO need to test with not-hardcoded data!
-        String[] userNames = {"사용자1", "사용자2", "사용자3", "사용자4", null};
-        boolean[] acceptances = {true, true, false, true, false};
-        int lastAcceptedUserNum = 0;
+        String baseURL = getString(R.string.baseURL);
+        String deviceID = Utils.getDeviceID();
+        String res = NetworkUtils.sendRequestToGetUsersByDeviceId(baseURL, deviceID);
 
-        ArrayList<UserAcceptance> tempList = new ArrayList<>();
-        final int MAX_USER_NUM = 5;
-
-        for (int i = 0; i < MAX_USER_NUM; i++) {
-            String userName = userNames[i];
-            String userID = userNames[i];
-            boolean acceptance = acceptances[i];
-
-            // check if there are no more users
-            if (userName == null) {
-                tempList.add(null);
-                continue;
-            }
-
-            UserAcceptance user = new UserAcceptance(userName, userID, acceptance);
-
-            // check if the current user is accepted
-            if (acceptance) {
-                // Use conditional statement to sort the user acceptance list
-                // Basically, the accepted users must appear before than the non-accepted users.
-                // Thus, by checking the index of latest accepted user, this method will sort the user acceptance list.
-                if (lastAcceptedUserNum != i) {
-                    userList.add(lastAcceptedUserNum, user);
-                } else {
-                    userList.add(user);
-                }
-
-                lastAcceptedUserNum += 1;
-            } else {
-                userList.add(user);
-            }
-        }
-
-        // add users in the tempList to the userList
-        userList.addAll(tempList);
+        sessionManager.parseResponse(res, userList);
     }
 
     private void updateUserCards() {
@@ -90,7 +62,7 @@ public class ManagerActivity extends AppCompatActivity {
                 continue;
             }
 
-            String userName = user.getUserName();
+            String userName = user.getUserID();
             updateUserName(i, userName);
 
             if (!user.isAccepted()) {

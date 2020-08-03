@@ -7,11 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,8 +34,9 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     private double previousLatitude;
     private double previousLongitude;
 
-    private final long interval_time = 60000;
+    private final long interval_time = 10000;
     private static String userID = "";
+    private static String adminUserID = "대표사용자";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_realtime_map);
 
         // get userID
-        RealtimeMap.userID = getUserID();
+        RealtimeMap.userID = getUserIDFromLocalStorage();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -71,7 +70,15 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         };
         m_handler.postDelayed(runnable, interval_time);
 
-        //TODO 5초 기다린 뒤에 파이어베이스 토큰과 사용자 이름을 전송 -> 토큰 등록하기
+        // send request to register (or update) gcm token
+        Handler tokenRegistrationHandler = new Handler();
+        Runnable tokenRegistrationThread = new Runnable() {
+            @Override
+            public void run() {
+                registerGCMTokenWithDeviceId();
+            }
+        };
+        tokenRegistrationHandler.postDelayed(tokenRegistrationThread, 5000);
     }
 
     @Override
@@ -167,7 +174,18 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
         Utils.setmMemberKey(memberKey);
     }
 
-    private String getUserID() {
+    private void registerGCMTokenWithDeviceId() {
+        String sp_name = getString(R.string.shared_preferences_file_name);
+        SharedPreferences sp = getSharedPreferences(sp_name, MODE_PRIVATE);
+
+        String not_found = getString(R.string.not_found_invalid_key);
+        String fcm_token_str = sp.getString(getString(R.string.fcm_token_key),not_found);
+        String baseURL = getString(R.string.baseURL);
+
+        NetworkUtils.sendRequestForRegisterUser(baseURL, userID, fcm_token_str);
+    }
+
+    private String getUserIDFromLocalStorage() {
         String sp_name = getString(R.string.shared_preferences_file_name);
         String user_id_key = getString(R.string.user_id_key);
         SharedPreferences sp = getSharedPreferences(sp_name, MODE_PRIVATE);
@@ -180,6 +198,9 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
 
         if (jsonObject != null) {
             try {
+                String adminUser = jsonObject.getString("admin_user");
+                RealtimeMap.adminUserID = adminUser;
+
                 return jsonObject.getString("device_member_key");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -202,10 +223,10 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
                 String deviceName = jsonObj.getString("name");
 
                 // check if at least one of latitude or longitude are changed.
-                if (latitude != previousLatitude || longitude != previousLongitude) {
+                //if (latitude != previousLatitude || longitude != previousLongitude) {
                     mMap.clear(); // Removes all markers, overlays, and polylines from the map.
                     setLocationForMap(latitude, longitude, deviceName, true);
-                }
+                //}
 
                 this.setPreviousLatLng(latitude, longitude);
             } catch (JSONException e) {
@@ -245,5 +266,13 @@ public class RealtimeMap extends FragmentActivity implements OnMapReadyCallback 
     private void setPreviousLatLng(double previousLatitude, double previousLongitude) {
         this.previousLatitude = previousLatitude;
         this.previousLongitude = previousLongitude;
+    }
+
+    public static String getUserID() {
+        return userID;
+    }
+
+    public static String getAdminUserID() {
+        return adminUserID;
     }
 }

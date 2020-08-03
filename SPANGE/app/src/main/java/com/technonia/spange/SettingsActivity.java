@@ -168,8 +168,8 @@ public class SettingsActivity extends AppCompatActivity {
                     return;
                 }
 
-                //TODO should not hard-code the admin id
-                showAlertDialog("Test Admin");
+                String adminUserID = RealtimeMap.getAdminUserID();
+                showAlertDialog(adminUserID);
             }
 
             private boolean checkIfInputTextIsInvalid(String text) {
@@ -191,8 +191,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void navigateToManagerScreen() {
-        Intent intent = new Intent(this, ManagerActivity.class);
-        startActivity(intent);
+        String userId = RealtimeMap.getUserID();
+        String adminId = RealtimeMap.getAdminUserID();
+
+        // only the admin user can access to the Manager Activity
+        if (userId.equals(adminId)) {
+            Intent intent = new Intent(this, ManagerActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void showAlertDialog(String adminName) {

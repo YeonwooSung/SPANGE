@@ -74,6 +74,18 @@ public class NetworkUtils {
         return sendPOSTRequest(urlStr, null, null, device_id);
     }
 
+    static String sendRequestForSignUp(String baseURL, String email, String password, String userName) {
+        String urlStr = baseURL + "/spangeSignup?email=" + email + "&password=" + password + "&username=" + userName;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, userName, null);
+    }
+
+    static String sendRequestToGetUsersByDeviceId(String baseURL, String deviceID) {
+        String urlStr = baseURL + "/spange/users/registered?deviceID=" + deviceID;
+        Log.d("URL", urlStr);
+        return sendPOSTRequest(urlStr, null, null, deviceID);
+    }
+
     private static String sendPOSTRequest(String urlStr, String token, String user_id, String device_id) {
         try {
             URL url = new URL(urlStr);

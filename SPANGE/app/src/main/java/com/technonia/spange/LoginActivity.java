@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         String user_id = sessionManager.storeSessionInfo(jsonObject, username_key, sp);
         if (user_id == null) return false;
 
+        Log.d("User_id", user_id);
 
         // get device id
         String device_id_key = getString(R.string.device_id_key);
@@ -102,6 +103,8 @@ public class LoginActivity extends AppCompatActivity {
 
         String device_id = sessionManager.storeDeviceID(jsonObject_deviceID, device_id_key, sp);
         if (device_id == null) return false;
+
+        Log.d("device_id", device_id);
 
         return true;
     }
