@@ -69,16 +69,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             this.setLatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
         }
 
+        //TODO
+        String title = Utils.getDeviceID();
+
         // check if latitude and longitude are default values
         if (latitude == DEFAULT_LATITUDE && longitude == DEFAULT_LONGITUDE) {
             setLatLng(Utils.DEFAULT_LATITUDE, Utils.DEFAULT_LONGITUDE);
 
             // Generate alert message to let the user know that there is some problem with latitude and longitude value.
             generateMessageToHandleLatLngError();
+
+            title = "스팡이 사무실";
         }
 
         LatLng lat_lng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(lat_lng).title("스팡이 사무실"));
+        mMap.addMarker(new MarkerOptions().position(lat_lng).title(title));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat_lng, 18));
     }
 
